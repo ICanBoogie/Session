@@ -51,7 +51,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 			[ 'name', ini_get('session.name'), uniqid() ],
 			[ 'cache_limiter', ini_get('session.cache_limiter'), uniqid() ],
 			[ 'cache_expire', ini_get('session.cache_expire'), mt_rand(100, 1000) ],
-			[ 'module_name', Session::DEFAULT_OPTION_MODULE_NAME, 'redis' ],
+			[ 'module_name', Session::DEFAULT_OPTION_MODULE_NAME, 'files' ],
 			[ 'save_path', ini_get('session.save_path'), uniqid() ],
 			[ 'cookie_params', session_get_cookie_params(), [
 
@@ -123,5 +123,20 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 		$this->assertSame($value, $session[$name]);
 		unset($session[$name]);
 		$this->assertFalse(isset($session[$name]));
+	}
+
+	public function test_forward_method()
+	{
+		$this->session->commit();
+	}
+
+	/**
+	 * @expectedException \BadMethodCallException
+	 */
+	public function test_forward_invalid_method()
+	{
+		$method = 'method_' . uniqid();
+
+		$this->session->$method();
 	}
 }

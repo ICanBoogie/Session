@@ -35,6 +35,13 @@ use ICanBoogie\Session\SessionOptions;
  * @property string $remote_agent_hash The remote user agent hash of the request that created the
  * session.
  * @property string $token A token that can be used to prevent cross-site request forgeries.
+ *
+ * @method void abort() Discard session array changes and finish session.
+ * @method void commit() Write session data and end session.
+ * @method bool decode(string $data) Decodes session data from a session encoded string.
+ * @method void destroy() Destroys all data registered to a session.
+ * @method string encode() Encodes the current session data as a session encoded string.
+ * @method void reset() Re-initialize session array with original values.
  */
 class Session implements SessionOptions, \ArrayAccess
 {
@@ -310,6 +317,28 @@ class Session implements SessionOptions, \ArrayAccess
 		}
 	}
 
+	public function __call($name, $arguments)
+	{
+		$this->assert_is_forwadable($name);
+
+		call_user_func_array("session_$name", $arguments);
+	}
+
+	/**
+	 * Asserts that a method is forwadable to a session function.
+	 *
+	 * @param string $name
+	 *
+	 * @throws \BadMethodCallException if the method is not forwadable
+	 */
+	protected function assert_is_forwadable($name)
+	{
+		if (!in_array($name, [ 'abort', 'commit', 'decode', 'destroy', 'encode', 'reset' ]))
+		{
+			throw new \BadMethodCallException("Unknown method: $name.");
+		}
+	}
+
 	/**
 	 * Normalizes options.
 	 *
@@ -414,94 +443,6 @@ class Session implements SessionOptions, \ArrayAccess
 		}
 
 		return session_regenerate_id($delete_old_session);
-	}
-
-	/**
-	 * Encodes the current session data as a string.
-	 *
-	 * @see session_encode()
-	 *
-	 * @codeCoverageIgnore
-	 */
-	public function encode()
-	{
-		session_encode();
-	}
-
-	/**
-	 * Decodes session data from a string.
-	 *
-	 * @param string $data
-	 *
-	 * @return bool
-	 *
-	 * @see session_decode()
-	 *
-	 * @codeCoverageIgnore
-	 */
-	public function decode($data)
-	{
-		return session_decode($data);
-	}
-
-	/**
-	 * Destroys all data registered to a session.
-	 *
-	 * @return bool
-	 *
-	 * @see session_destory()
-	 *
-	 * @codeCoverageIgnore
-	 */
-	public function destroy()
-	{
-		return session_destroy();
-	}
-
-	/**
-	 * Free all session variables.
-	 *
-	 * @see session_unset()
-	 *
-	 * @codeCoverageIgnore
-	 */
-	public function clear()
-	{
-		session_unset();
-	}
-
-	/**
-	 * @see session_commit()
-	 *
-	 * @codeCoverageIgnore
-	 */
-	public function commit()
-	{
-		session_commit();
-	}
-
-	/**
-	 * @return bool
-	 *
-	 * @see session_abort()
-	 *
-	 * @codeCoverageIgnore
-	 */
-	public function abort()
-	{
-		return session_abort();
-	}
-
-	/**
-	 * @return bool
-	 *
-	 * @see session_reset()
-	 *
-	 * @codeCoverageIgnore
-	 */
-	public function reset()
-	{
-		return session_reset();
 	}
 
 	/**
