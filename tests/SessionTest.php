@@ -47,13 +47,13 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 	{
 		return [
 
-			[ 'id', '', uniqid() ],
-			[ 'name', ini_get('session.name'), uniqid() ],
-			[ 'cache_limiter', ini_get('session.cache_limiter'), uniqid() ],
-			[ 'cache_expire', ini_get('session.cache_expire'), mt_rand(100, 1000) ],
-			[ 'module_name', Session::DEFAULT_OPTION_MODULE_NAME, 'files' ],
-			[ 'save_path', ini_get('session.save_path'), uniqid() ],
-			[ 'cookie_params', session_get_cookie_params(), [
+			[ Session::OPTION_ID, '', uniqid() ],
+			[ Session::OPTION_NAME, ini_get('session.name'), uniqid() ],
+			[ Session::OPTION_CACHE_LIMITER, ini_get('session.cache_limiter'), uniqid() ],
+			[ Session::OPTION_CACHE_EXPIRE, ini_get('session.cache_expire'), mt_rand(100, 1000) ],
+			[ Session::OPTION_MODULE_NAME, Session::DEFAULT_OPTION_MODULE_NAME, 'files' ],
+			[ Session::OPTION_SAVE_PATH, ini_get('session.save_path'), uniqid() ],
+			[ Session::OPTION_COOKIE_PARAMS, session_get_cookie_params(), [
 
 					CookieParams::OPTION_LIFETIME => mt_rand(100, 1000),
 					CookieParams::OPTION_PATH => '/' . uniqid(),
@@ -103,11 +103,11 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
 	public function test_segment()
 	{
-		$this->assertEquals(Session::DEFAULT_OPTION_SEGMENT, $this->session->segment);
+		$this->assertEquals(Session::DEFAULT_OPTION_SEGMENT_NAME, $this->session->segment_name);
 
-		$segment = uniqid();
-		$session = new Session([ Session::OPTION_SEGMENT => $segment ]);
-		$this->assertEquals($segment, $session->segment);
+		$segment_name = uniqid();
+		$session = new Session([ Session::OPTION_SEGMENT_NAME => $segment_name ]);
+		$this->assertEquals($segment_name, $session->segment_name);
 	}
 
 	public function test_array_access()
@@ -138,5 +138,41 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 		$method = 'method_' . uniqid();
 
 		$this->session->$method();
+	}
+
+	public function test_should_not_start_if_session_already_active()
+	{
+		$session = $this->getMockBuilder(Session::class)
+			->setMethods([ 'get_is_active', 'start' ])
+			->getMock();
+		$session
+			->expects($this->once())
+			->method('get_is_active')
+			->willReturn(true);
+		$session
+			->expects($this->never())
+			->method('start');
+
+		/* @var $session Session */
+
+		$session->start_or_reuse();
+	}
+
+	public function test_should_start_if_no_session_is_active()
+	{
+		$session = $this->getMockBuilder(Session::class)
+			->setMethods([ 'get_is_active', 'start' ])
+			->getMock();
+		$session
+			->expects($this->once())
+			->method('get_is_active')
+			->willReturn(false);
+		$session
+			->expects($this->once())
+			->method('start');
+
+		/* @var $session Session */
+
+		$session->start_or_reuse();
 	}
 }

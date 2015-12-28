@@ -14,7 +14,7 @@ interface SessionOptions
 	const OPTION_MODULE_NAME = 'module_name';
 	const OPTION_SAVE_PATH = 'save_path';
 	const OPTION_COOKIE_PARAMS = 'cookie_params';
-	const OPTION_SEGMENT = 'segment';
+	const OPTION_SEGMENT_NAME = 'segment_name';
 
 	const DEFAULT_OPTION_ID = null;
 	const DEFAULT_OPTION_NAME = null;
@@ -22,5 +22,5 @@ interface SessionOptions
 	const DEFAULT_OPTION_CACHE_EXPIRE = null;
 	const DEFAULT_OPTION_MODULE_NAME = 'files';
 	const DEFAULT_OPTION_SAVE_PATH = null;
-	const DEFAULT_OPTION_SEGMENT = 'icanboogie';
+	const DEFAULT_OPTION_SEGMENT_NAME = 'icanboogie';
 }

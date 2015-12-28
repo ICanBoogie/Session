@@ -13,6 +13,7 @@ namespace ICanBoogie;
 
 use ICanBoogie\Accessor\AccessorTrait;
 use ICanBoogie\Session\CookieParams;
+use ICanBoogie\Session\SegmentTrait;
 use ICanBoogie\Session\SessionOptions;
 
 /**
@@ -30,7 +31,7 @@ use ICanBoogie\Session\SessionOptions;
  * @property-read bool $is_active Whether sessions are enabled, and one exists.
  * @property-read bool $has_none Whether sessions are enabled, but none exists.
  * @property-read bool $is_referenced Whether session id is referenced in the cookie.
- * @property-read string $segment Default session segment.
+ * @property-read string $segment_name Default session segment.
  *
  * @property string $remote_agent_hash The remote user agent hash of the request that created the
  * session.
@@ -45,7 +46,7 @@ use ICanBoogie\Session\SessionOptions;
  */
 class Session implements SessionOptions, \ArrayAccess
 {
-	use AccessorTrait;
+	use AccessorTrait, SegmentTrait;
 
 	static private $default_options = [
 
@@ -55,7 +56,7 @@ class Session implements SessionOptions, \ArrayAccess
 		self::OPTION_CACHE_EXPIRE  => self::DEFAULT_OPTION_CACHE_EXPIRE,
 		self::OPTION_MODULE_NAME   => self::DEFAULT_OPTION_MODULE_NAME,
 		self::OPTION_SAVE_PATH     => self::DEFAULT_OPTION_SAVE_PATH,
-		self::OPTION_SEGMENT       => self::DEFAULT_OPTION_SEGMENT,
+		self::OPTION_SEGMENT_NAME  => self::DEFAULT_OPTION_SEGMENT_NAME,
 
 	];
 
@@ -296,14 +297,24 @@ class Session implements SessionOptions, \ArrayAccess
 	 *
 	 * @var string
 	 */
-	private $segment;
+	private $segment_name;
 
 	/**
 	 * @return string
 	 */
-	protected function get_segment()
+	protected function get_segment_name()
 	{
-		return $this->segment;
+		return $this->segment_name;
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function &get_segment()
+	{
+		$this->start_or_reuse();
+
+		return $_SESSION[$this->segment_name];
 	}
 
 	/**
@@ -317,7 +328,13 @@ class Session implements SessionOptions, \ArrayAccess
 		}
 	}
 
-	public function __call($name, $arguments)
+	/**
+	 * Forwards selected method to session functions.
+	 *
+	 * @param string $name
+	 * @param array $arguments
+	 */
+	public function __call($name, array $arguments)
 	{
 		$this->assert_is_forwadable($name);
 
@@ -359,46 +376,6 @@ class Session implements SessionOptions, \ArrayAccess
 	}
 
 	/**
-	 * @inheritdoc
-	 */
-	public function offsetExists($offset)
-	{
-		$this->ensure_started();
-
-		return isset($_SESSION[$this->segment][$offset]);
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function &offsetGet($offset)
-	{
-		$this->ensure_started();
-
-		return $_SESSION[$this->segment][$offset];
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function offsetSet($offset, $value)
-	{
-		$this->ensure_started();
-
-		$_SESSION[$this->segment][$offset] = $value;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function offsetUnset($offset)
-	{
-		$this->ensure_started();
-
-		unset($_SESSION[$this->segment][$offset]);
-	}
-
-	/**
 	 * Initialize session data.
 	 *
 	 * **Note:** If PHP is running from CLI the `session_start()` method is not invoked but a fake
@@ -424,6 +401,19 @@ class Session implements SessionOptions, \ArrayAccess
 	}
 
 	/**
+	 * Starts a new session or reuse the current one.
+	 */
+	public function start_or_reuse()
+	{
+		if ($this->is_active)
+		{
+			return;
+		}
+
+		$this->start();
+	}
+
+	/**
 	 * Update the current session id with a newly generated one.
 	 *
 	 * @param bool $delete_old_session
@@ -443,20 +433,5 @@ class Session implements SessionOptions, \ArrayAccess
 		}
 
 		return session_regenerate_id($delete_old_session);
-	}
-
-	/**
-	 * Ensures that the session is started.
-	 *
-	 * @codeCoverageIgnore
-	 */
-	protected function ensure_started()
-	{
-		if ($this->status === PHP_SESSION_ACTIVE)
-		{
-			return;
-		}
-
-		$this->start();
 	}
 }
