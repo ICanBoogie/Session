@@ -13,6 +13,7 @@ namespace ICanBoogie;
 
 use ICanBoogie\Accessor\AccessorTrait;
 use ICanBoogie\Session\CookieParams;
+use ICanBoogie\Session\SegmentCollection;
 use ICanBoogie\Session\SegmentTrait;
 use ICanBoogie\Session\SessionOptions;
 
@@ -32,6 +33,8 @@ use ICanBoogie\Session\SessionOptions;
  * @property-read bool $has_none Whether sessions are enabled, but none exists.
  * @property-read bool $is_referenced Whether session id is referenced in the cookie.
  * @property-read string $segment_name Default session segment.
+ * @property-read SegmentCollection $segments Session segments.
+ * @property-read array $reference A reference to the session array.
  *
  * @property string $remote_agent_hash The remote user agent hash of the request that created the
  * session.
@@ -310,7 +313,7 @@ class Session implements SessionOptions, \ArrayAccess
 	/**
 	 * @return array
 	 */
-	protected function &get_segment()
+	protected function &get_reference()
 	{
 		$this->start_or_reuse();
 
@@ -318,14 +321,48 @@ class Session implements SessionOptions, \ArrayAccess
 	}
 
 	/**
+	 * @var SegmentCollection
+	 */
+	private $segments;
+
+	protected function get_segments()
+	{
+		return $this->segments;
+	}
+
+	/**
 	 * @param array $options
 	 */
 	public function __construct(array $options = [])
 	{
+		$this->segments = new SegmentCollection($this);
+
 		foreach ($this->normalize_options($options) as $option => $value)
 		{
 			$this->$option = $value;
 		}
+	}
+
+	/**
+	 * Returns a property value.
+	 *
+	 * **Note:** We override the method as to be able to return {@link $reference} as a reference
+	 * and not a value.
+	 *
+	 * @param string $name Property name.
+	 *
+	 * @return mixed
+	 */
+	public function &__get($name)
+	{
+		if ($name === 'reference')
+		{
+			return $this->get_reference();
+		}
+
+		$result = $this->accessor_get($name);
+
+		return $result;
 	}
 
 	/**
@@ -336,19 +373,19 @@ class Session implements SessionOptions, \ArrayAccess
 	 */
 	public function __call($name, array $arguments)
 	{
-		$this->assert_is_forwadable($name);
+		$this->assert_is_forwardable($name);
 
 		call_user_func_array("session_$name", $arguments);
 	}
 
 	/**
-	 * Asserts that a method is forwadable to a session function.
+	 * Asserts that a method is forwardable to a session function.
 	 *
 	 * @param string $name
 	 *
-	 * @throws \BadMethodCallException if the method is not forwadable
+	 * @throws \BadMethodCallException if the method is not forwardable
 	 */
-	protected function assert_is_forwadable($name)
+	protected function assert_is_forwardable($name)
 	{
 		if (!in_array($name, [ 'abort', 'commit', 'decode', 'destroy', 'encode', 'reset' ]))
 		{
@@ -414,7 +451,7 @@ class Session implements SessionOptions, \ArrayAccess
 	}
 
 	/**
-	 * Update the current session id with a newly generated one.
+	 * Updates the current session id with a newly generated one.
 	 *
 	 * @param bool $delete_old_session
 	 *

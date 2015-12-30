@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the ICanBoogie package.
+ *
+ * (c) Olivier Laviale <olivier.laviale@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace ICanBoogie\Session;
 
 trait SegmentTrait
@@ -9,7 +18,7 @@ trait SegmentTrait
 	 */
 	public function offsetExists($offset)
 	{
-		return isset($this->get_segment()[$offset]);
+		return isset($this->get_reference()[$offset]);
 	}
 
 	/**
@@ -17,7 +26,7 @@ trait SegmentTrait
 	 */
 	public function &offsetGet($offset)
 	{
-		return $this->get_segment()[$offset];
+		return $this->get_reference()[$offset];
 	}
 
 	/**
@@ -25,7 +34,7 @@ trait SegmentTrait
 	 */
 	public function offsetSet($offset, $value)
 	{
-		$this->get_segment()[$offset] = $value;
+		$this->get_reference()[$offset] = $value;
 	}
 
 	/**
@@ -33,11 +42,11 @@ trait SegmentTrait
 	 */
 	public function offsetUnset($offset)
 	{
-		unset($this->get_segment()[$offset]);
+		unset($this->get_reference()[$offset]);
 	}
 
 	/**
 	 * Starts a new session or reuse the current one.
 	 */
-	abstract protected function &get_segment();
+	abstract protected function &get_reference();
 }

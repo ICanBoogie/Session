@@ -1,8 +1,18 @@
 <?php
 
+/*
+ * This file is part of the ICanBoogie package.
+ *
+ * (c) Olivier Laviale <olivier.laviale@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace ICanBoogie;
 
 use ICanBoogie\Session\CookieParams;
+use ICanBoogie\Session\SegmentCollection;
 
 class SessionTest extends \PHPUnit_Framework_TestCase
 {
@@ -47,8 +57,8 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 	{
 		return [
 
-			[ Session::OPTION_ID, '', uniqid() ],
-			[ Session::OPTION_NAME, ini_get('session.name'), uniqid() ],
+			[ Session::OPTION_ID, '', md5(uniqid()) ],
+			[ Session::OPTION_NAME, ini_get('session.name'), 'name-' . uniqid() ],
 			[ Session::OPTION_CACHE_LIMITER, ini_get('session.cache_limiter'), uniqid() ],
 			[ Session::OPTION_CACHE_EXPIRE, ini_get('session.cache_expire'), mt_rand(100, 1000) ],
 			[ Session::OPTION_MODULE_NAME, Session::DEFAULT_OPTION_MODULE_NAME, 'files' ],
@@ -88,7 +98,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
 	public function test_is_referenced()
 	{
-		$id = uniqid();
+		$id = 'sid-' . uniqid();
 		$session = $this->session;
 		$this->assertFalse($session->is_referenced);
 
@@ -108,6 +118,25 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 		$segment_name = uniqid();
 		$session = new Session([ Session::OPTION_SEGMENT_NAME => $segment_name ]);
 		$this->assertEquals($segment_name, $session->segment_name);
+	}
+
+	public function test_segments()
+	{
+		$this->assertInstanceOf(SegmentCollection::class, $this->session->segments);
+	}
+
+	public function test_reference()
+	{
+		$property = uniqid();
+		$v1 = uniqid();
+		$v2 = uniqid();
+		$this->session[$property] = $v1;
+		$reference = &$this->session->reference;
+
+		$this->assertInternalType('array', $reference);
+		$this->assertSame($v1, $reference[$property]);
+		$reference[$property] = $v2;
+		$this->assertSame($v2, $this->session[$property]);
 	}
 
 	public function test_array_access()
