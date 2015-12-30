@@ -13,9 +13,9 @@ interface CookieParams
 	const OPTION_SECURE = 'secure';
 	const OPTION_HTTP_ONLY = 'httponly';
 
-	const DEFAULT_OPTION_LIFETIME = 0;
-	const DEFAULT_OPTION_PATH = null;
-	const DEFAULT_OPTION_DOMAIN = null;
-	const DEFAULT_OPTION_SECURE = null;
-	const DEFAULT_OPTION_HTTP_ONLY = null;
+	const DEFAULT_LIFETIME = 0;
+	const DEFAULT_PATH = null;
+	const DEFAULT_DOMAIN = null;
+	const DEFAULT_SECURE = null;
+	const DEFAULT_HTTP_ONLY = null;
 }

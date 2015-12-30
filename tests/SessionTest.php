@@ -61,7 +61,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 			[ Session::OPTION_NAME, ini_get('session.name'), 'name-' . uniqid() ],
 			[ Session::OPTION_CACHE_LIMITER, ini_get('session.cache_limiter'), uniqid() ],
 			[ Session::OPTION_CACHE_EXPIRE, ini_get('session.cache_expire'), mt_rand(100, 1000) ],
-			[ Session::OPTION_MODULE_NAME, Session::DEFAULT_OPTION_MODULE_NAME, 'files' ],
+			[ Session::OPTION_MODULE_NAME, Session::DEFAULT_MODULE_NAME, 'files' ],
 			[ Session::OPTION_SAVE_PATH, ini_get('session.save_path'), uniqid() ],
 			[ Session::OPTION_COOKIE_PARAMS, session_get_cookie_params(), [
 
@@ -113,7 +113,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
 	public function test_segment()
 	{
-		$this->assertEquals(Session::DEFAULT_OPTION_SEGMENT_NAME, $this->session->segment_name);
+		$this->assertEquals(Session::DEFAULT_SEGMENT_NAME, $this->session->segment_name);
 
 		$segment_name = uniqid();
 		$session = new Session([ Session::OPTION_SEGMENT_NAME => $segment_name ]);

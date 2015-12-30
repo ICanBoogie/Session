@@ -25,11 +25,11 @@ interface SessionOptions
 	const OPTION_COOKIE_PARAMS = 'cookie_params';
 	const OPTION_SEGMENT_NAME = 'segment_name';
 
-	const DEFAULT_OPTION_ID = null;
-	const DEFAULT_OPTION_NAME = null;
-	const DEFAULT_OPTION_CACHE_LIMITER = null;
-	const DEFAULT_OPTION_CACHE_EXPIRE = null;
-	const DEFAULT_OPTION_MODULE_NAME = 'files';
-	const DEFAULT_OPTION_SAVE_PATH = null;
-	const DEFAULT_OPTION_SEGMENT_NAME = 'icanboogie';
+	const DEFAULT_ID = null;
+	const DEFAULT_NAME = null;
+	const DEFAULT_CACHE_LIMITER = null;
+	const DEFAULT_CACHE_EXPIRE = null;
+	const DEFAULT_MODULE_NAME = 'files';
+	const DEFAULT_SAVE_PATH = null;
+	const DEFAULT_SEGMENT_NAME = 'icanboogie';
 }

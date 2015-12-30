@@ -52,23 +52,23 @@ class Session implements SessionOptions, \ArrayAccess
 
 	static private $default_options = [
 
-		self::OPTION_ID            => self::DEFAULT_OPTION_ID,
-		self::OPTION_NAME          => self::DEFAULT_OPTION_NAME,
-		self::OPTION_CACHE_LIMITER => self::DEFAULT_OPTION_CACHE_LIMITER,
-		self::OPTION_CACHE_EXPIRE  => self::DEFAULT_OPTION_CACHE_EXPIRE,
-		self::OPTION_MODULE_NAME   => self::DEFAULT_OPTION_MODULE_NAME,
-		self::OPTION_SAVE_PATH     => self::DEFAULT_OPTION_SAVE_PATH,
-		self::OPTION_SEGMENT_NAME  => self::DEFAULT_OPTION_SEGMENT_NAME,
+		self::OPTION_ID            => self::DEFAULT_ID,
+		self::OPTION_NAME          => self::DEFAULT_NAME,
+		self::OPTION_CACHE_LIMITER => self::DEFAULT_CACHE_LIMITER,
+		self::OPTION_CACHE_EXPIRE  => self::DEFAULT_CACHE_EXPIRE,
+		self::OPTION_MODULE_NAME   => self::DEFAULT_MODULE_NAME,
+		self::OPTION_SAVE_PATH     => self::DEFAULT_SAVE_PATH,
+		self::OPTION_SEGMENT_NAME  => self::DEFAULT_SEGMENT_NAME,
 
 	];
 
 	static private $default_cookie_params = [
 
-		CookieParams::OPTION_LIFETIME  => CookieParams::DEFAULT_OPTION_LIFETIME,
-		CookieParams::OPTION_PATH      => CookieParams::DEFAULT_OPTION_PATH,
-		CookieParams::OPTION_DOMAIN    => CookieParams::DEFAULT_OPTION_DOMAIN,
-		CookieParams::OPTION_SECURE    => CookieParams::DEFAULT_OPTION_SECURE,
-		CookieParams::OPTION_HTTP_ONLY => CookieParams::DEFAULT_OPTION_HTTP_ONLY,
+		CookieParams::OPTION_LIFETIME  => CookieParams::DEFAULT_LIFETIME,
+		CookieParams::OPTION_PATH      => CookieParams::DEFAULT_PATH,
+		CookieParams::OPTION_DOMAIN    => CookieParams::DEFAULT_DOMAIN,
+		CookieParams::OPTION_SECURE    => CookieParams::DEFAULT_SECURE,
+		CookieParams::OPTION_HTTP_ONLY => CookieParams::DEFAULT_HTTP_ONLY,
 
 	];
 
@@ -233,11 +233,11 @@ class Session implements SessionOptions, \ArrayAccess
 	 */
 	protected function set_cookie_params(array $params)
 	{
-		$lifetime = CookieParams::DEFAULT_OPTION_LIFETIME;
-		$path     = CookieParams::DEFAULT_OPTION_PATH;
-		$domain   = CookieParams::DEFAULT_OPTION_DOMAIN;
-		$secure   = CookieParams::DEFAULT_OPTION_SECURE;
-		$httponly = CookieParams::DEFAULT_OPTION_HTTP_ONLY;
+		$lifetime = CookieParams::DEFAULT_LIFETIME;
+		$path     = CookieParams::DEFAULT_PATH;
+		$domain   = CookieParams::DEFAULT_DOMAIN;
+		$secure   = CookieParams::DEFAULT_SECURE;
+		$httponly = CookieParams::DEFAULT_HTTP_ONLY;
 
 		extract($params, EXTR_OVERWRITE);
 
