@@ -26,17 +26,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 		$this->session = new Session;
 	}
 
-	public function test_from()
-	{
-		$session = Session::from();
-
-		$this->assertInstanceOf(Session::class, $session);
-
-		$this->setExpectedException(\LogicException::class);
-
-		Session::from();
-	}
-
 	/**
 	 * @dataProvider provide_test_property
 	 *

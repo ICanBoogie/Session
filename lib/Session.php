@@ -54,31 +54,6 @@ class Session implements SessionOptions, \ArrayAccess
 
 	const TOKEN_NAME = 'session_token';
 
-	static private $instance;
-
-	/**
-	 * @param array $options
-	 *
-	 * @return static
-	 */
-	static public function from(array $options = [])
-	{
-		self::assert_not_instantiated();
-
-		return self::$instance = new static($options);
-	}
-
-	/**
-	 * @throws \LogicException if the session is already instantiated.
-	 */
-	static public function assert_not_instantiated()
-	{
-		if (self::$instance)
-		{
-			throw new \LogicException("Session already instantiated.");
-		}
-	}
-
 	/**
 	 * @return string
 	 */
