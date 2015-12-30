@@ -7,7 +7,122 @@
 [![Code Coverage](https://img.shields.io/coveralls/ICanBoogie/Session/master.svg)](https://coveralls.io/r/ICanBoogie/Session)
 [![Packagist](https://img.shields.io/packagist/dt/icanboogie/session.svg)](https://packagist.org/packages/icanboogie/session)
 
-The **icanboogie/session** package manages PHP sessions.
+The **icanboogie/session** package provides an interface to easily manage PHP sessions. You create a session instance with the desired options and the session is automatically started when reading or writing. The session instance is used as an array, just like `$_SESSION`. You can provide _session segments_ to your components so that they have a safe place to store their own session values. Finally, you can use the _session token_ with unsafe HTTP methods to prevent [CSRF][].
+
+It is important to keep in mind that the session instance it basically mapping the `$_SESSION` array and `session_*` functions, thus you don't need to change anything in your application setup. You may use Redis to store sessions and some other fancy session handler, it makes no difference.
+
+The following code demonstrates some usages of the session instance:
+
+```php
+<?php
+
+use ICanBoogie\Session;
+
+$session = new Session;
+
+#
+# The session is automatically started when reading or writing
+#
+if (!isset($session['bar']))
+{
+	$session['bar'] = 'foo';
+}
+
+#
+# Optionally, changes can be commited right away,
+# also closing the session.
+#
+$session->commit();
+
+#
+# The session is automatically started again
+#
+$session['baz'] = 'dib';
+
+#
+# Using isolated session segments
+#
+$segment = $session->fragments['Vendor\NameSpace'];
+$segment['bar'] = 123;
+echo $session->fragments['Vendor\NameSpace']['bar']; // 123
+$session->fragments['Vendor\NameSpace']['bar'] = 456;
+echo $segment['bar']; // 456
+
+#
+# The session token can be used to prevent CSRF. A new token is
+# generated if none exists.
+#
+$token = $session->token;       // 86eac2e0d91521df1efe7422e0d9ce48ef5ac75778ca36176bf4b84db9ff35858e491923e6f034ece8bcc4b38c3f7e99
+$session->verify_token($token); // true
+
+#
+# Of course all of this is just mapping to the `$_SESSION` array
+#
+echo $_SESSION['bar']; // foo
+echo $_SESSION['baz']; // dib
+echo $_SESSION['Vendor\NameSpace']['bar']; // 456
+```
+
+
+
+
+
+## Getting started
+
+A [Session][] instance is a representation of a PHP session. It is created with parameters mapped to `session_*` functions. Options can be defined to customize you session, their default values are inherited from the PHP config.
+
+The following code demonstrates how a session using default values can be instantiated:
+
+```php
+use ICanBoogie\Session;
+
+$session = new Session;
+```
+
+The following code demonstrates how options can be used to customize the session instance. Only a few options are demonstrated here, more are available.
+
+```php
+use ICanBoogie\Session;
+use ICanBoogie\Session\CookieParams;
+
+$session = new Session([
+
+	Session::OPTION_NAME => 'SID',
+	Session::OPTION_CACHE_LIMITER => 'public',
+	Session::OPTION_COOKIE_PARAMS => [
+	
+		CookieParams::OPTION_DOMAIN => '.mydomain.tld',
+		CookieParams::OPTION_SECURE => true
+	
+	]
+
+]);
+```
+
+If you are defining these options in a config file, you might want to use the light weight `SessionOptions` interface:
+
+```php
+<?php
+
+// config/session.php
+
+use ICanBoogie\SessionOptions as Session;
+
+return [
+
+	Session::OPTION_NAME => 'SID',
+	Session::OPTION_CACHE_LIMITER => 'public',
+	Session::OPTION_COOKIE_PARAMS => [
+	
+		CookieParams::OPTION_DOMAIN => '.mydomain.tld',
+		CookieParams::OPTION_SECURE => true
+	
+	]
+
+];
+```
+
+
 
 
 
@@ -79,30 +194,6 @@ The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
 
 
-[ControllerBindings]:                  http://api.icanboogie.org/bind-routing/0.2/class-ICanBoogie.Binding.Routing.ControllerBindings.html
-[Response]:                            http://api.icanboogie.org/http/2.5/class-ICanBoogie.HTTP.Response.html
-[Request]:                             http://api.icanboogie.org/http/2.5/class-ICanBoogie.HTTP.Request.html
-[RequestDispatcher]:                   http://api.icanboogie.org/http/2.5/class-ICanBoogie.HTTP.RequestDispatcher.html
-[documentation]:                       http://api.icanboogie.org/routing/2.5/
-[ActionNotDefined]:                    http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.ActionNotDefined.html
-[ActionTrait]:                         http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.Controller.ActionTrait.html
-[Controller]:                          http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.Controller.html
-[Controller\BeforeActionEvent]:        http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.Controller.BeforeActionEvent.html
-[Controller\ActionEvent]:              http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.Controller.ActionEvent.html
-[ControllerNotDefined]:                http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.ControllerNotDefined.html
-[FormattedRoute]:                      http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.FormattedRoute.html
-[Pattern]:                             http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.Pattern.html
-[PatternNotDefined]:                   http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.PatternNotDefined.html
-[ResourceTrait]:                       http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.Controller.ResourceTrait.html
-[Route]:                               http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.Route.html
-[Route\RescueEvent]:                   http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.Route.RescueEvent.html
-[RouteCollection]:                     http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.RouteCollection.html
-[RouteDispatcher]:                     http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.RouteDispatcher.html
-[RouteDispatcher\BeforeDispatchEvent]: http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.RouteDispatcher.BeforeDispatchEvent.html
-[RouteDispatcher\DispatchEvent]:       http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.RouteDispatcher.DispatchEvent.html
-[RouteMaker]:                          http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.RouteMaker.html
-[RouteNotDefined]:                     http://api.icanboogie.org/routing/2.5/class-ICanBoogie.Routing.RouteNotDefined.html
-[ICanBoogie]:                          https://github.com/ICanBoogie/ICanBoogie
-[icanboogie/bind-routing]:             https://github.com/ICanBoogie/bind-routing
-[icanboogie/view]:                     https://github.com/ICanBoogie/View
-[RESTful]:                             https://en.wikipedia.org/wiki/Representational_state_transfer
+[Session]:    http://api.icanboogie.org/session/latest/class-ICanBoogie.Session.html
+[ICanBoogie]: https://github.com/ICanBoogie/ICanBoogie
+[CSRF]:       https://en.wikipedia.org/wiki/Cross-site_request_forgery

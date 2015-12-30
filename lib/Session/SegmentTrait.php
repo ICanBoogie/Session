@@ -46,7 +46,9 @@ trait SegmentTrait
 	}
 
 	/**
-	 * Starts a new session or reuse the current one.
+	 * Return the segment reference.
+	 *
+	 * @return array
 	 */
 	abstract protected function &get_reference();
 }

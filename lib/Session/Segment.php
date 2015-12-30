@@ -51,7 +51,7 @@ class Segment implements SessionSegment
 	}
 
 	/**
-	 * Starts a new session or reuse the current one.
+	 * @inheritdoc
 	 */
 	protected function &get_reference()
 	{

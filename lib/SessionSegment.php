@@ -17,7 +17,7 @@ namespace ICanBoogie;
 interface SessionSegment extends \ArrayAccess
 {
 	/**
-	 * Clears all data from the segment.
+	 * Clear all data from the segment.
 	 */
 	public function clear();
 }

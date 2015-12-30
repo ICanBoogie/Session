@@ -5,7 +5,7 @@ namespace ICanBoogie\Session;
 use ICanBoogie\SessionOptions;
 
 /**
- * Normalizes session options.
+ * Normalize session options.
  */
 class NormalizeOptions implements SessionOptions
 {
@@ -48,7 +48,7 @@ class NormalizeOptions implements SessionOptions
 	}
 
 	/**
-	 * Returns default options.
+	 * Return default options.
 	 *
 	 * @return array
 	 */
@@ -65,7 +65,7 @@ class NormalizeOptions implements SessionOptions
 	}
 
 	/**
-	 * Returns default cookie params.
+	 * Return default cookie params.
 	 *
 	 * @return array
 	 */

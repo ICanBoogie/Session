@@ -185,7 +185,7 @@ class Session implements SessionOptions, SessionSegment
 	}
 
 	/**
-	 * Returns the current session status.
+	 * Return the current session status.
 	 *
 	 * @return int
 	 */
@@ -235,7 +235,7 @@ class Session implements SessionOptions, SessionSegment
 	}
 
 	/**
-	 * @return array
+	 * @inheritdoc
 	 */
 	protected function &get_reference()
 	{
@@ -269,7 +269,7 @@ class Session implements SessionOptions, SessionSegment
 	}
 
 	/**
-	 * Returns a property value.
+	 * Return a property value.
 	 *
 	 * **Note:** We override the method as to be able to return {@link $reference} as a reference
 	 * and not a value.
@@ -291,7 +291,7 @@ class Session implements SessionOptions, SessionSegment
 	}
 
 	/**
-	 * Forwards selected method to session functions.
+	 * Forward selected method to session functions.
 	 *
 	 * @param string $name
 	 * @param array $arguments
@@ -304,7 +304,7 @@ class Session implements SessionOptions, SessionSegment
 	}
 
 	/**
-	 * Asserts that a method is forwardable to a session function.
+	 * Assert that a method is forwardable to a session function.
 	 *
 	 * @param string $name
 	 *
@@ -344,7 +344,7 @@ class Session implements SessionOptions, SessionSegment
 	}
 
 	/**
-	 * Starts a new session or reuse the current one.
+	 * Start a new session or reuse the current one.
 	 */
 	public function start_or_reuse()
 	{
@@ -357,7 +357,7 @@ class Session implements SessionOptions, SessionSegment
 	}
 
 	/**
-	 * Clears the session of all data.
+	 * Clear the session of all data.
 	 *
 	 * @see session_unset()
 	 *
@@ -376,7 +376,7 @@ class Session implements SessionOptions, SessionSegment
 	}
 
 	/**
-	 * Updates the current session id with a newly generated one.
+	 * Update the current session id with a newly generated one.
 	 *
 	 * @param bool $delete_old_session
 	 *
@@ -398,7 +398,7 @@ class Session implements SessionOptions, SessionSegment
 	}
 
 	/**
-	 * Generates a session token.
+	 * Generate a session token.
 	 *
 	 * @return string
 	 */
@@ -408,7 +408,7 @@ class Session implements SessionOptions, SessionSegment
 	}
 
 	/**
-	 * Verifies that a given token matches the session's token.
+	 * Verify that a given token matches the session's token.
 	 *
 	 * @param string $token
 	 *
