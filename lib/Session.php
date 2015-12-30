@@ -34,6 +34,7 @@ use ICanBoogie\Session\SegmentTrait;
  * @property-read string $segment_name Default session segment.
  * @property-read SegmentCollection $segments Session segments.
  * @property-read array $reference A reference to the session array.
+ * @property-read string $token Current session token that can be used to prevent CSRF.
  *
  * @property string $remote_agent_hash The remote user agent hash of the request that created the
  * session.
@@ -49,6 +50,8 @@ use ICanBoogie\Session\SegmentTrait;
 class Session implements SessionOptions, \ArrayAccess
 {
 	use AccessorTrait, SegmentTrait;
+
+	const TOKEN_NAME = 'session_token';
 
 	static private $default_options = [
 
@@ -154,6 +157,21 @@ class Session implements SessionOptions, \ArrayAccess
 	protected function set_name($name)
 	{
 		session_name($name);
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function get_token()
+	{
+		$token = &$this[self::TOKEN_NAME];
+
+		if (!$token)
+		{
+			$token = $this->generate_token();
+		}
+
+		return $token;
 	}
 
 	/**
@@ -469,5 +487,27 @@ class Session implements SessionOptions, \ArrayAccess
 		}
 
 		return session_regenerate_id($delete_old_session);
+	}
+
+	/**
+	 * Generates a session token.
+	 *
+	 * @return string
+	 */
+	protected function generate_token()
+	{
+		return sha1(openssl_random_pseudo_bytes(1024));
+	}
+
+	/**
+	 * Verifies that a given token matches the session's token.
+	 *
+	 * @param string $token
+	 *
+	 * @return bool
+	 */
+	public function verify_token($token)
+	{
+		return $this[self::TOKEN_NAME] === $token;
 	}
 }

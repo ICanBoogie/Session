@@ -204,4 +204,15 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
 		$session->start_or_reuse();
 	}
+
+	public function test_token()
+	{
+		$session = $this->session;
+		$this->assertFalse($session->verify_token(uniqid()));
+
+		$token = $session->token;
+		$this->assertNotEmpty($token);
+		$this->assertSame($token, $session->token);
+		$this->assertTrue($session->verify_token($token));
+	}
 }
