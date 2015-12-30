@@ -32,7 +32,6 @@ use ICanBoogie\Session\SegmentTrait;
  * @property-read bool $is_active Whether sessions are enabled, and one exists.
  * @property-read bool $has_none Whether sessions are enabled, but none exists.
  * @property-read bool $is_referenced Whether session id is referenced in the cookie.
- * @property-read string $segment_name Default session segment.
  * @property-read SegmentCollection $segments Session segments.
  * @property-read array $reference A reference to the session array.
  * @property-read string $token Current session token that can be used to prevent CSRF.
@@ -240,28 +239,13 @@ class Session implements SessionOptions, \ArrayAccess
 	}
 
 	/**
-	 * Default segment name.
-	 *
-	 * @var string
-	 */
-	private $segment_name;
-
-	/**
-	 * @return string
-	 */
-	protected function get_segment_name()
-	{
-		return $this->segment_name;
-	}
-
-	/**
 	 * @return array
 	 */
 	protected function &get_reference()
 	{
 		$this->start_or_reuse();
 
-		return $_SESSION[$this->segment_name];
+		return $_SESSION;
 	}
 
 	/**

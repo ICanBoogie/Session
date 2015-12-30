@@ -100,15 +100,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 		unset($_COOKIE[$session->name]);
 	}
 
-	public function test_segment()
-	{
-		$this->assertEquals(Session::DEFAULT_SEGMENT_NAME, $this->session->segment_name);
-
-		$segment_name = uniqid();
-		$session = new Session([ Session::OPTION_SEGMENT_NAME => $segment_name ]);
-		$this->assertEquals($segment_name, $session->segment_name);
-	}
-
 	public function test_segments()
 	{
 		$this->assertInstanceOf(SegmentCollection::class, $this->session->segments);

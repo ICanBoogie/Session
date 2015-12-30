@@ -17,7 +17,6 @@ class NormalizeOptions implements SessionOptions
 		self::OPTION_CACHE_EXPIRE  => self::DEFAULT_CACHE_EXPIRE,
 		self::OPTION_MODULE_NAME   => self::DEFAULT_MODULE_NAME,
 		self::OPTION_SAVE_PATH     => self::DEFAULT_SAVE_PATH,
-		self::OPTION_SEGMENT_NAME  => self::DEFAULT_SEGMENT_NAME,
 
 	];
 
