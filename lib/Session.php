@@ -15,7 +15,6 @@ use ICanBoogie\Accessor\AccessorTrait;
 use ICanBoogie\Session\CookieParams;
 use ICanBoogie\Session\SegmentCollection;
 use ICanBoogie\Session\SegmentTrait;
-use ICanBoogie\Session\SessionOptions;
 
 /**
  * Session.

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace ICanBoogie\Session;
+namespace ICanBoogie;
 
 /**
  * Session options.
