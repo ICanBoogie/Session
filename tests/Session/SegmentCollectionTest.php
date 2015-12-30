@@ -64,7 +64,7 @@ class SegmentCollectionTest extends \PHPUnit_Framework_TestCase
 		foreach ($segments as $k => $segment)
 		{
 			$this->assertEquals($segment_name, $k);
-			$this->assertInstanceOf(SessionSegment::class, $segment);
+			$this->assertInstanceOf(Segment::class, $segment);
 			unset($segments[$segment_name]);
 
 			return;

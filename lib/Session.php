@@ -14,7 +14,6 @@ namespace ICanBoogie;
 use ICanBoogie\Accessor\AccessorTrait;
 use ICanBoogie\Session\CookieParams;
 use ICanBoogie\Session\NormalizeOptions;
-use ICanBoogie\Session\Segment;
 use ICanBoogie\Session\SegmentCollection;
 use ICanBoogie\Session\SegmentTrait;
 
@@ -44,7 +43,7 @@ use ICanBoogie\Session\SegmentTrait;
  * @method string encode() Encodes the current session data as a session encoded string.
  * @method void reset() Re-initialize session array with original values.
  */
-class Session implements SessionOptions, Segment
+class Session implements SessionOptions, SessionSegment
 {
 	use AccessorTrait, SegmentTrait;
 

@@ -11,10 +11,50 @@
 
 namespace ICanBoogie\Session;
 
-interface Segment extends \ArrayAccess
+use ICanBoogie\Session;
+use ICanBoogie\SessionSegment;
+
+/**
+ * A session segment.
+ */
+class Segment implements SessionSegment
 {
+	use SegmentTrait;
+
 	/**
-	 * Clears all data from the segment.
+	 * @var string
 	 */
-	public function clear();
+	private $segment_name;
+
+	/**
+	 * @var Session
+	 */
+	private $session;
+
+	/**
+	 * @param string $segment_name
+	 * @param Session $session
+	 */
+	public function __construct($segment_name, Session $session)
+	{
+		$this->segment_name = $segment_name;
+		$this->session = $session;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function clear()
+	{
+		$reference = &$this->get_reference();
+		$reference = [];
+	}
+
+	/**
+	 * Starts a new session or reuse the current one.
+	 */
+	protected function &get_reference()
+	{
+		return $this->session->reference[$this->segment_name];
+	}
 }

@@ -19,7 +19,7 @@ class SessionSegmentTest extends \PHPUnit_Framework_TestCase
 	{
 		$session = new Session;
 		$segment_name = uniqid();
-		$segment = new SessionSegment($segment_name, $session);
+		$segment = new Segment($segment_name, $session);
 		$property = uniqid();
 		$value = uniqid();
 
@@ -39,7 +39,7 @@ class SessionSegmentTest extends \PHPUnit_Framework_TestCase
 	{
 		$session = new Session;
 		$segment_name = uniqid();
-		$segment = new SessionSegment($segment_name, $session);
+		$segment = new Segment($segment_name, $session);
 		$property = uniqid();
 		$value = uniqid();
 		$segment[$property] = $value;

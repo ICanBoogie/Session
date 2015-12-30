@@ -13,6 +13,7 @@ namespace ICanBoogie\Session;
 
 use ICanBoogie\OffsetNotWritable;
 use ICanBoogie\Session;
+use ICanBoogie\SessionSegment;
 
 /**
  * A collection of session segments.
@@ -25,7 +26,7 @@ class SegmentCollection implements \ArrayAccess, \IteratorAggregate
 	private $session;
 
 	/**
-	 * @var Segment[]
+	 * @var SessionSegment[]
 	 */
 	private $segments = [];
 
@@ -60,7 +61,7 @@ class SegmentCollection implements \ArrayAccess, \IteratorAggregate
 	{
 		$segment = &$this->segments[$segment_name];
 
-		return $segment ?: $segment = new SessionSegment($segment_name, $this->session);
+		return $segment ?: $segment = new Segment($segment_name, $this->session);
 	}
 
 	/**
