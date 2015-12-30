@@ -405,7 +405,7 @@ class Session implements SessionOptions, \ArrayAccess
 	 */
 	protected function generate_token()
 	{
-		return sha1(openssl_random_pseudo_bytes(1024));
+		return hash('sha384', openssl_random_pseudo_bytes(4096));
 	}
 
 	/**
