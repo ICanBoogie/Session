@@ -14,6 +14,7 @@ namespace ICanBoogie;
 use ICanBoogie\Accessor\AccessorTrait;
 use ICanBoogie\Session\CookieParams;
 use ICanBoogie\Session\NormalizeOptions;
+use ICanBoogie\Session\Segment;
 use ICanBoogie\Session\SegmentCollection;
 use ICanBoogie\Session\SegmentTrait;
 
@@ -36,10 +37,6 @@ use ICanBoogie\Session\SegmentTrait;
  * @property-read array $reference A reference to the session array.
  * @property-read string $token Current session token that can be used to prevent CSRF.
  *
- * @property string $remote_agent_hash The remote user agent hash of the request that created the
- * session.
- * @property string $token A token that can be used to prevent cross-site request forgeries.
- *
  * @method void abort() Discard session array changes and finish session.
  * @method void commit() Write session data and end session.
  * @method bool decode(string $data) Decodes session data from a session encoded string.
@@ -47,7 +44,7 @@ use ICanBoogie\Session\SegmentTrait;
  * @method string encode() Encodes the current session data as a session encoded string.
  * @method void reset() Re-initialize session array with original values.
  */
-class Session implements SessionOptions, \ArrayAccess
+class Session implements SessionOptions, Segment
 {
 	use AccessorTrait, SegmentTrait;
 
@@ -358,6 +355,25 @@ class Session implements SessionOptions, \ArrayAccess
 		}
 
 		$this->start();
+	}
+
+	/**
+	 * Clears the session of all data.
+	 *
+	 * @see session_unset()
+	 *
+	 * @codeCoverageIgnore
+	 */
+	public function clear()
+	{
+		if (PHP_SAPI === 'cli')
+		{
+			$_SESSION = [];
+
+			return;
+		}
+
+		session_unset();
 	}
 
 	/**

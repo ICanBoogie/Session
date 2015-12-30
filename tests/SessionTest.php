@@ -185,6 +185,16 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 		$session->start_or_reuse();
 	}
 
+	public function test_clear()
+	{
+		$session = $this->session;
+		$property = uniqid();
+		$value = uniqid();
+		$session[$property] = $value;
+		$session->clear();
+		$this->assertFalse(isset($session[$property]));
+	}
+
 	public function test_token()
 	{
 		$session = $this->session;

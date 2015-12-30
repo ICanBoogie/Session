@@ -60,7 +60,7 @@ class SegmentCollection implements \ArrayAccess, \IteratorAggregate
 	{
 		$segment = &$this->segments[$segment_name];
 
-		return $segment ?: $segment = new Segment($segment_name, $this->session);
+		return $segment ?: $segment = new SessionSegment($segment_name, $this->session);
 	}
 
 	/**

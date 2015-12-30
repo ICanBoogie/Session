@@ -13,13 +13,13 @@ namespace ICanBoogie\Session;
 
 use ICanBoogie\Session;
 
-class SegmentTest extends \PHPUnit_Framework_TestCase
+class SessionSegmentTest extends \PHPUnit_Framework_TestCase
 {
 	public function test_array_access()
 	{
 		$session = new Session;
 		$segment_name = uniqid();
-		$segment = new Segment($segment_name, $session);
+		$segment = new SessionSegment($segment_name, $session);
 		$property = uniqid();
 		$value = uniqid();
 
@@ -33,5 +33,17 @@ class SegmentTest extends \PHPUnit_Framework_TestCase
 		unset($segment[$property]);
 		$this->assertFalse(isset($segment[$property]));
 		$this->assertFalse(isset($session[$segment_name][$property]));
+	}
+
+	public function test_clear()
+	{
+		$session = new Session;
+		$segment_name = uniqid();
+		$segment = new SessionSegment($segment_name, $session);
+		$property = uniqid();
+		$value = uniqid();
+		$segment[$property] = $value;
+		$segment->clear();
+		$this->assertFalse(isset($segment[$property]));
 	}
 }
