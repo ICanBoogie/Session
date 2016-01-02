@@ -41,6 +41,7 @@ use ICanBoogie\Session\SegmentTrait;
  * @method bool decode(string $data) Decodes session data from a session encoded string.
  * @method void destroy() Destroys all data registered to a session.
  * @method string encode() Encodes the current session data as a session encoded string.
+ * @method bool regenerate_id($delete_old_session = false)  Update the current session id with a newly generated one.
  * @method void reset() Re-initialize session array with original values.
  */
 class Session implements SessionOptions, SessionSegment
@@ -51,6 +52,8 @@ class Session implements SessionOptions, SessionSegment
 
 	/**
 	 * @return string
+	 *
+	 * @codeCoverageIgnore
 	 */
 	protected function get_id()
 	{
@@ -312,9 +315,11 @@ class Session implements SessionOptions, SessionSegment
 	 */
 	protected function assert_is_forwardable($name)
 	{
-		if (!in_array($name, [ 'abort', 'commit', 'decode', 'destroy', 'encode', 'reset' ]))
+		if (!in_array($name, [ 'abort', 'commit', 'decode', 'destroy', 'encode', 'regenerate_id', 'reset' ]))
 		{
-			throw new \BadMethodCallException("Unknown method: $name.");
+			$method = get_called_class() . "::$name()";
+
+			throw new \BadMethodCallException("Unknown method: $method.");
 		}
 	}
 
@@ -334,13 +339,20 @@ class Session implements SessionOptions, SessionSegment
 	{
 		if (PHP_SAPI === 'cli')
 		{
+			if (isset($_SESSION))
+			{
+				return false;
+			}
+
 			$_SESSION = &$_SESSION;
 
-			return;
+			return true;
 		}
 
-		session_start();
+		$started = session_start();
 		$this->regenerate_id();
+
+		return $started;
 	}
 
 	/**
@@ -376,25 +388,15 @@ class Session implements SessionOptions, SessionSegment
 	}
 
 	/**
-	 * Update the current session id with a newly generated one.
+	 * Update the current session id and token.
 	 *
-	 * @param bool $delete_old_session
-	 *
-	 * @return bool|null `true` when the id is regenerated, `false` when it is not, `null` when
-	 * the application is running from CLI.
-	 *
-	 * @see session_regenerate_id()
-	 *
-	 * @codeCoverageIgnore
+	 * @return bool `true` on success or `false` on failure.
 	 */
-	public function regenerate_id($delete_old_session = false)
+	public function regenerate()
 	{
-		if (PHP_SAPI === 'cli')
-		{
-			return null;
-		}
+		$this[self::TOKEN_NAME] = $this->generate_token();
 
-		return session_regenerate_id($delete_old_session);
+		return $this->regenerate_id(true);
 	}
 
 	/**

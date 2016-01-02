@@ -12,4 +12,6 @@
 namespace ICanBoogie;
 
 require __DIR__ . '/../vendor/autoload.php';
+require_once 'DummySessionHandler.php';
 
+ini_set('session.use_cookies', '0');

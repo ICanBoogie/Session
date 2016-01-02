@@ -21,9 +21,37 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 	 */
 	private $session;
 
+	/**
+	 * @var string
+	 */
+	private $session_id;
+
 	public function setUp()
 	{
-		$this->session = new Session;
+		session_set_save_handler(new DummySessionHandler);
+
+		$this->session_id = sha1(uniqid());
+		$this->session = $this
+			->getMockBuilder(Session::class)
+			->setConstructorArgs([ [ Session::OPTION_ID => $this->session_id ] ])
+			->setMethods([ 'get_id', 'regenerate_id' ])
+			->getMockForAbstractClass();
+		$this->session
+			->expects($this->any())
+			->method('get_id')
+			->willReturnCallback(function() {
+
+				return $this->session_id;
+
+			});
+		$this->session
+			->expects($this->any())
+			->method('regenerate_id')
+			->willReturnCallback(function() {
+
+				return $this->session_id = sha1(uniqid());
+
+			});
 	}
 
 	/**
@@ -35,18 +63,21 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function test_property($property, $default, $custom)
 	{
+		ini_set('session.use_cookies', '1'); // so that cookie params work properly
+
 		$session = $this->session;
 		$this->assertEquals($default, $session->$property);
 
 		$session->$property = $custom;
 		$this->assertEquals($custom, $session->$property);
+
+		ini_set('session.use_cookies', '0');
 	}
 
 	public function provide_test_property()
 	{
 		return [
 
-			[ Session::OPTION_ID, '', md5(uniqid()) ],
 			[ Session::OPTION_NAME, ini_get('session.name'), 'name-' . uniqid() ],
 			[ Session::OPTION_CACHE_LIMITER, ini_get('session.cache_limiter'), uniqid() ],
 			[ Session::OPTION_CACHE_EXPIRE, ini_get('session.cache_expire'), mt_rand(100, 1000) ],
@@ -75,9 +106,9 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($this->session->is_active);
 	}
 
-	public function test_is_desabled()
+	public function test_is_disabled()
 	{
-		$this->assertEquals(!ini_get('session.use_cookies'), $this->session->is_disabled);
+		$this->assertEquals(session_status() === PHP_SESSION_DISABLED, $this->session->is_disabled);
 	}
 
 	public function test_has_none()
@@ -204,5 +235,16 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 		$this->assertNotEmpty($token);
 		$this->assertSame($token, $session->token);
 		$this->assertTrue($session->verify_token($token));
+	}
+
+	public function test_should_regenerate_id_and_token()
+	{
+		$session = $this->session;
+		$id = $session->id;
+		$token = $session->token;
+
+		$session->regenerate();
+		$this->assertNotEquals($id, $session->id);
+		$this->assertNotEquals($token, $session->token);
 	}
 }
