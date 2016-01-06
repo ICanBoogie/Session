@@ -36,15 +36,25 @@ class FlashTest extends \PHPUnit_Framework_TestCase
 		$segment_name = $this->segment_name;
 		$property = uniqid();
 		$value = uniqid();
+		$flash = $segment->flash;
 
-		$this->assertInstanceOf(SessionFlash::class, $segment->flash);
+		$this->assertInstanceOf(SessionFlash::class, $flash);
 
-		$segment->flash[$property] = $value;
+		$this->assertFalse(isset($flash[$property]));
+		$flash[$property] = $value;
+		$this->assertTrue(isset($flash[$property]));
 		$this->assertSame($value, $_SESSION[$segment_name][SessionFlash::SESSION_FLASH][$property]);
 		$value_read = $segment->flash[$property];
 		$this->assertSame($value, $value_read);
 		$this->assertArrayNotHasKey($property, $_SESSION[$segment_name][SessionFlash::SESSION_FLASH]);
 		$this->assertSame($value, $segment->flash[$property]);
+
+		# unset
+		$flash[$property] = $value;
+		$this->assertSame($value, $_SESSION[$segment_name][SessionFlash::SESSION_FLASH][$property]);
+		unset($flash[$property]);
+		$this->assertArrayNotHasKey($property, $_SESSION[$segment_name][SessionFlash::SESSION_FLASH]);
+		$this->assertNull($flash[$property]);
 	}
 
 	public function test_should_return_null_on_undefined_offset()
