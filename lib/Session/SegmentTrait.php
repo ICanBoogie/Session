@@ -11,6 +11,11 @@
 
 namespace ICanBoogie\Session;
 
+use ICanBoogie\SessionFlash;
+
+/**
+ * @property array $reference A reference to the session array.
+ */
 trait SegmentTrait
 {
 	/**
@@ -46,9 +51,49 @@ trait SegmentTrait
 	}
 
 	/**
+	 * Return a property value.
+	 *
+	 * **Note:** We override the method as to be able to return {@link $reference} as a reference
+	 * and not a value.
+	 *
+	 * @param string $name Property name.
+	 *
+	 * @return mixed
+	 */
+	public function &__get($name)
+	{
+		if ($name === 'reference')
+		{
+			return $this->get_reference();
+		}
+
+		$result = $this->accessor_get($name);
+
+		return $result;
+	}
+
+	/**
 	 * Return the segment reference.
 	 *
 	 * @return array
 	 */
 	abstract protected function &get_reference();
+
+	/**
+	 * Return a session flash.
+	 *
+	 * @return SessionFlash
+	 */
+	abstract protected function get_flash();
+
+	/**
+	 * Returns the value of an inaccessible property.
+	 *
+	 * @param string $property
+	 *
+	 * @return mixed
+	 *
+	 * @see \ICanBoogie\Accessor\AccessorTrait::accessor_get()
+	 */
+	abstract protected function accessor_get($property);
 }

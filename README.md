@@ -7,9 +7,9 @@
 [![Code Coverage](https://img.shields.io/coveralls/ICanBoogie/Session/master.svg)](https://coveralls.io/r/ICanBoogie/Session)
 [![Packagist](https://img.shields.io/packagist/dt/icanboogie/session.svg)](https://packagist.org/packages/icanboogie/session)
 
-The **icanboogie/session** package provides an interface to easily manage PHP sessions. You create a session instance with the desired options and the session is automatically started when reading or writing. The session instance is used as an array, just like `$_SESSION`. You can provide _session segments_ to your components so that they have a safe place to store their own session values. Finally, you can use the _session token_ with unsafe HTTP methods to prevent [CSRF][].
+The **icanboogie/session** package provides an interface to easily manage PHP sessions. You create a session instance with the desired options and the session is automatically started when reading or writing. The session instance is used as an array, just like `$_SESSION`. You can provide _session segments_ to your components so that they have a safe place to store their own session values. Flash values can be used in the session and its segments. Finally, you can use the _session token_ with unsafe HTTP methods to prevent [CSRF][].
 
-It is important to keep in mind that the session instance it basically mapping the `$_SESSION` array and `session_*` functions, thus you don't need to change anything in your application setup. You may use Redis to store sessions and some other fancy session handler, it makes no difference.
+It is important to keep in mind that the session instance it basically mapping the `$_SESSION` array and `session_*` functions, thus you don't need to change anything in your application setup. You may use Redis to store sessions and some fancy session handler, it makes no difference.
 
 The following code demonstrates some usages of the session instance:
 
@@ -35,7 +35,7 @@ if (!isset($session['bar']))
 $session->commit();
 
 #
-# The session is automatically started again
+# The session is automatically re-started on read or write
 #
 $session['baz'] = 'dib';
 
@@ -47,6 +47,12 @@ $segment['bar'] = 123;
 echo $session->fragments['Vendor\NameSpace']['bar']; // 123
 $session->fragments['Vendor\NameSpace']['bar'] = 456;
 echo $segment['bar']; // 456
+
+#
+# Using flash
+#
+$session->flash['info'] = "Well done!";
+$session->segments['Vendor\NameSpace']->flash['bar'] = 123;
 
 #
 # The session token can be used to prevent CSRF. A new token is
@@ -123,6 +129,69 @@ return [
 ```
 
 
+
+
+
+## Flash values
+
+Flash values are session values that are forgotten after they are read, although they can be read multiple time during the run time of a PHP script. They can be set in the session or in its segments.
+
+The following example demonstrates how flash values work with the session and segments:
+
+```php
+<?php
+
+use ICanBoogie\Session;
+
+$session = new Session;
+$session->flash['abc'] = 123;
+$session->segments['segment-one']->flash['abc'] = 456;
+```
+
+The `$_SESSION` array would look like this:
+
+```
+array(2) {
+  '__FLASH__' =>
+  array(1) {
+    'abc' =>
+    int(123)
+  }
+  'segment-one' =>
+  array(1) {
+    '__FLASH__' =>
+    array(1) {
+      'abc' =>
+      int(456)
+    }
+  }
+}
+```
+
+After a flash values is read, it disappears from the session/segment, although it can be read multiple time during the run time of a PHP script:
+
+```php
+<?php
+
+$session_abc = $session->flash['abc'];   // 123
+$session_abc === $session->flash['abc']; // true
+$segment_abc = $session->segments['segment-one']->flash['abc'];   // 456
+$segment_abc === $session->segments['segment-one']->flash['abc']; // true
+```
+
+```
+array(2) {
+  '__FLASH__' =>
+  array(0) {
+  }
+  'segment-one' =>
+  array(1) {
+    '__FLASH__' =>
+    array(0) {
+    }
+  }
+}
+```
 
 
 

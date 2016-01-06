@@ -13,6 +13,7 @@ namespace ICanBoogie;
 
 use ICanBoogie\Accessor\AccessorTrait;
 use ICanBoogie\Session\CookieParams;
+use ICanBoogie\Session\Flash;
 use ICanBoogie\Session\NormalizeOptions;
 use ICanBoogie\Session\SegmentCollection;
 use ICanBoogie\Session\SegmentTrait;
@@ -33,7 +34,7 @@ use ICanBoogie\Session\SegmentTrait;
  * @property-read bool $has_none Whether sessions are enabled, but none exists.
  * @property-read bool $is_referenced Whether session id is referenced in the cookie.
  * @property-read SegmentCollection $segments Session segments.
- * @property-read array $reference A reference to the session array.
+ * @property SessionFlash $flash The session flash.
  * @property-read string $token Current session token that can be used to prevent CSRF.
  *
  * @method void abort() Discard session array changes and finish session.
@@ -46,7 +47,10 @@ use ICanBoogie\Session\SegmentTrait;
  */
 class Session implements SessionOptions, SessionSegment
 {
-	use AccessorTrait, SegmentTrait;
+	use AccessorTrait, SegmentTrait
+	{
+		SegmentTrait::__get insteadof AccessorTrait;
+	}
 
 	const TOKEN_NAME = 'session_token';
 
@@ -254,7 +258,20 @@ class Session implements SessionOptions, SessionSegment
 
 	protected function get_segments()
 	{
-		return $this->segments;
+		return $this->segments ?: $this->segments = new SegmentCollection($this);
+	}
+
+	/**
+	 * @var SessionFlash
+	 */
+	private $flash;
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function get_flash()
+	{
+		return $this->flash ?: $this->flash = new Flash($this);
 	}
 
 	/**
@@ -262,35 +279,12 @@ class Session implements SessionOptions, SessionSegment
 	 */
 	public function __construct(array $options = [])
 	{
-		$this->segments = new SegmentCollection($this);
 		$normalize_options = new NormalizeOptions;
 
 		foreach ($normalize_options($options) as $option => $value)
 		{
 			$this->$option = $value;
 		}
-	}
-
-	/**
-	 * Return a property value.
-	 *
-	 * **Note:** We override the method as to be able to return {@link $reference} as a reference
-	 * and not a value.
-	 *
-	 * @param string $name Property name.
-	 *
-	 * @return mixed
-	 */
-	public function &__get($name)
-	{
-		if ($name === 'reference')
-		{
-			return $this->get_reference();
-		}
-
-		$result = $this->accessor_get($name);
-
-		return $result;
 	}
 
 	/**

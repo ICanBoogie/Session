@@ -13,6 +13,9 @@ namespace ICanBoogie;
 
 /**
  * An interface for session segments.
+ *
+ * @property array $reference A reference to the session segment array.
+ * @property SessionFlash $flash The session segment flash.
  */
 interface SessionSegment extends \ArrayAccess
 {

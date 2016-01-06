@@ -12,8 +12,9 @@
 namespace ICanBoogie\Session;
 
 use ICanBoogie\Session;
+use ICanBoogie\SessionSegment;
 
-class SessionSegmentTest extends \PHPUnit_Framework_TestCase
+class SegmentTest extends \PHPUnit_Framework_TestCase
 {
 	public function test_array_access()
 	{
@@ -45,5 +46,24 @@ class SessionSegmentTest extends \PHPUnit_Framework_TestCase
 		$segment[$property] = $value;
 		$segment->clear();
 		$this->assertFalse(isset($segment[$property]));
+	}
+
+	public function test_getting_a_segment_should_not_start_session()
+	{
+		$session = $this->getMockBuilder(Session::class)
+			->setMethods([ 'start', 'start_or_reuse' ])
+			->disableOriginalConstructor()
+			->getMock();
+		$session
+			->expects($this->never())
+			->method('start');
+		$session
+			->expects($this->never())
+			->method('start_or_reuse');
+
+		/* @var $session Session */
+
+		$this->assertInstanceOf(SegmentCollection::class, $session->segments);
+		$this->assertInstanceOf(SessionSegment::class, $session->segments[uniqid()]);
 	}
 }

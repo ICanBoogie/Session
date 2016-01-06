@@ -11,15 +11,23 @@
 
 namespace ICanBoogie\Session;
 
+use ICanBoogie\Accessor\AccessorTrait;
 use ICanBoogie\Session;
+use ICanBoogie\SessionFlash;
 use ICanBoogie\SessionSegment;
 
 /**
  * A session segment.
+ *
+ * @property array $reference A reference to the segment in the session.
+ * @property SessionFlash $flash The session segment flash.
  */
 class Segment implements SessionSegment
 {
-	use SegmentTrait;
+	use AccessorTrait, SegmentTrait
+	{
+		SegmentTrait::__get insteadof AccessorTrait;
+	}
 
 	/**
 	 * @var string
@@ -30,6 +38,27 @@ class Segment implements SessionSegment
 	 * @var Session
 	 */
 	private $session;
+
+	/**
+	 * @var SessionFlash
+	 */
+	private $flash;
+
+	/**
+	 * @return SessionFlash
+	 */
+	protected function get_flash()
+	{
+		return $this->flash ?: $this->flash = new Flash($this);
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function &get_reference()
+	{
+		return $this->session->reference[$this->segment_name];
+	}
 
 	/**
 	 * @param string $segment_name
@@ -48,13 +77,5 @@ class Segment implements SessionSegment
 	{
 		$reference = &$this->get_reference();
 		$reference = [];
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	protected function &get_reference()
-	{
-		return $this->session->reference[$this->segment_name];
 	}
 }
