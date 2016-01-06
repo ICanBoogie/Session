@@ -7,9 +7,16 @@
 [![Code Coverage](https://img.shields.io/coveralls/ICanBoogie/Session/master.svg)](https://coveralls.io/r/ICanBoogie/Session)
 [![Packagist](https://img.shields.io/packagist/dt/icanboogie/session.svg)](https://packagist.org/packages/icanboogie/session)
 
-The **icanboogie/session** package provides an interface to easily manage PHP sessions. You create a session instance with the desired options and the session is automatically started when reading or writing. The session instance is used as an array, just like `$_SESSION`. You can provide _session segments_ to your components so that they have a safe place to store their own session values. Flash values can be used in the session and its segments. Finally, you can use the _session token_ with unsafe HTTP methods to prevent [CSRF][].
+The **icanboogie/session** package provides an interface to easily manage PHP sessions. You create a
+session instance with the desired options and the session is automatically started when reading or
+writing. The session instance is used as an array, just like `$_SESSION`. You can provide _session
+segments_ to your components so that they have a safe place to store their own session values. Flash
+values can be used in the session and its segments. Finally, you can use the _session token_ with
+unsafe HTTP methods to prevent [CSRF][].
 
-It is important to keep in mind that the session instance it basically mapping the `$_SESSION` array and `session_*` functions, thus you don't need to change anything in your application setup. You may use Redis to store sessions and some fancy session handler, it makes no difference.
+It is important to keep in mind that the session instance it basically mapping the `$_SESSION` array
+and `session_*` functions, thus you don't need to change anything in your application setup. You may
+use Redis to store sessions and some fancy session handler, it makes no difference.
 
 The following code demonstrates some usages of the session instance:
 
@@ -75,7 +82,9 @@ echo $_SESSION['Vendor\NameSpace']['bar']; // 456
 
 ## Getting started
 
-A [Session][] instance is a representation of a PHP session. It is created with parameters mapped to `session_*` functions. Options can be defined to customize you session, their default values are inherited from the PHP config.
+A [Session][] instance is a representation of a PHP session. It is created with parameters mapped to
+`session_*` functions. Options can be defined to customize you session, their default values are
+inherited from the PHP config.
 
 The following code demonstrates how a session using default values can be instantiated:
 
@@ -85,7 +94,10 @@ use ICanBoogie\Session;
 $session = new Session;
 ```
 
-The following code demonstrates how options can be used to customize the session instance. Only a few options are demonstrated here, more are available.
+> **Note**: Nothing prevents you from using multiple [Session][] instances but it is not recommended.
+
+The following code demonstrates how options can be used to customize the session instance. Only a
+few options are demonstrated here, more are available.
 
 ```php
 use ICanBoogie\Session;
@@ -96,16 +108,17 @@ $session = new Session([
 	Session::OPTION_NAME => 'SID',
 	Session::OPTION_CACHE_LIMITER => 'public',
 	Session::OPTION_COOKIE_PARAMS => [
-	
+
 		CookieParams::OPTION_DOMAIN => '.mydomain.tld',
 		CookieParams::OPTION_SECURE => true
-	
+
 	]
 
 ]);
 ```
 
-If you are defining these options in a config file, you might want to use the light weight `SessionOptions` interface:
+If you are defining these options in a config file, you might want to use the light weight
+`SessionOptions` interface:
 
 ```php
 <?php
@@ -119,10 +132,10 @@ return [
 	Session::OPTION_NAME => 'SID',
 	Session::OPTION_CACHE_LIMITER => 'public',
 	Session::OPTION_COOKIE_PARAMS => [
-	
+
 		CookieParams::OPTION_DOMAIN => '.mydomain.tld',
 		CookieParams::OPTION_SECURE => true
-	
+
 	]
 
 ];
@@ -134,7 +147,9 @@ return [
 
 ## Flash values
 
-Flash values are session values that are forgotten after they are read, although they can be read multiple time during the run time of a PHP script. They can be set in the session or in its segments.
+Flash values are session values that are forgotten after they are read, although they can be read
+multiple time during the run time of a PHP script. They can be set in the session or in its
+segments.
 
 The following example demonstrates how flash values work with the session and segments:
 
@@ -168,7 +183,8 @@ array(2) {
 }
 ```
 
-After a flash values is read, it disappears from the session/segment, although it can be read multiple time during the run time of a PHP script:
+After a flash values is read, it disappears from the session/segment, although it can be read
+multiple time during the run time of a PHP script:
 
 ```php
 <?php
@@ -235,8 +251,10 @@ The package is [available on GitHub](https://github.com/ICanBoogie/Session), its
 
 ## Documentation
 
-The package is documented as part of the [ICanBoogie][] framework
-[documentation][]. You can generate the documentation for the package and its dependencies with the `make doc` command. The documentation is generated in the `build/docs` directory. [ApiGen](http://apigen.org/) is required. The directory can later be cleaned with the `make clean` command.
+The package is documented as part of the [ICanBoogie][] framework [documentation][]. You can
+generate the documentation for the package and its dependencies with the `make doc` command. The
+documentation is generated in the `build/docs` directory. [ApiGen](http://apigen.org/) is required.
+The directory can later be cleaned with the `make clean` command.
 
 
 
@@ -244,7 +262,11 @@ The package is documented as part of the [ICanBoogie][] framework
 
 ## Testing
 
-The test suite is ran with the `make test` command. [PHPUnit](https://phpunit.de/) and [Composer](http://getcomposer.org/) need to be globally available to run the suite. The command installs dependencies as required. The `make test-coverage` command runs test suite and also creates an HTML coverage report in `build/coverage`. The directory can later be cleaned with the `make clean` command.
+The test suite is ran with the `make test` command. [PHPUnit](https://phpunit.de/) and
+[Composer](http://getcomposer.org/) need to be globally available to run the suite. The command
+installs dependencies as required. The `make test-coverage` command runs test suite and also creates
+an HTML coverage report in `build/coverage`. The directory can later be cleaned with the `make
+clean` command.
 
 The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
