@@ -147,11 +147,16 @@ return [
 
 ## Session segments
 
-Session segments provide a safe place for components to store their values without conflicts. That is, two components may safely use a same key because their value is stored in different session _segments_. Segments act as namespaces for session values. It is then important to choose a safe namespace, a class name is often the safest option.
+Session segments provide a safe place for components to store their values without conflicts. That
+is, two components may safely use a same key because their value is stored in different session
+_segments_. Segments act as namespaces for session values. It is then important to choose a safe
+namespace, a class name is often the safest option.
 
-Session and session segments instances all implement the [SessionSegment][] interface. Components requiring session storage should use that interface rather than the [Session][] class.
+Session and session segments instances all implement the [SessionSegment][] interface. Components
+requiring session storage should use that interface rather than the [Session][] class.
 
-> **Note**: Obtaining a segment does not start a session, only read/write may automatically start a session. So don't hesitate to obtain session segments.
+> **Note**: Obtaining a segment does not start a session, only read/write may automatically start a
+session. So don't hesitate to obtain session segments.
 
 The following example demonstrates how a session segment might be injected into a controller:
 
@@ -259,6 +264,61 @@ array(2) {
 
 
 
+## Defeating Cross-Site Request Forgery
+
+The [Session][] instance provides a _session token_ that may be used to protect your application
+against [Cross-Site Request Forgery][]. Your application should verify that token before processing
+unsafe request, which use HTTP methods `POST`, `PUT`, and `DELETE`.
+
+> **Note**: You can trust that the session has always a token. If none exists when a token is
+requested a new one is created.
+
+The following example demonstrates how to use the session token with a `POST` form:
+
+```php
+<?php
+
+/**
+  * @var \ICanBoogie\Session $session
+  */
+
+?>
+
+<form method="POST" action="/articles">
+	<input type="hidden" value="<?= $session->token ?>" name="_session_token />
+	<!-- the remainder of the form … -->
+</form>
+```
+
+When processing an unsafe request, make sure that the session token is valid:
+
+```php
+<?php
+
+/**
+  * @var \ICanBoogie\Session $session
+  */
+
+if (in_array($_SERVER['REQUEST_METHOD'], [ 'POST', 'PUT', 'DELETE' ]))
+{
+	$token = isset($_POST['_session_token']) ? $_POST['_session_token'] : null;
+	
+	if ($session->verify_token($token))
+	{
+		// Token is verified, we can proceed with the request.
+	}
+	else
+	{
+		// Token is not verified, we should throw an exception.
+	}
+}
+```
+
+
+
+
+
+
 ----------
 
 
@@ -335,4 +395,5 @@ The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 [Session]:        http://api.icanboogie.org/session/latest/class-ICanBoogie.Session.html
 [SessionSegment]: http://api.icanboogie.org/session/latest/class-ICanBoogie.SessionSegment.html
 [ICanBoogie]: https://github.com/ICanBoogie/ICanBoogie
-[CSRF]:       https://en.wikipedia.org/wiki/Cross-site_request_forgery
+[CSRF]:                       https://en.wikipedia.org/wiki/Cross-site_request_forgery
+[Cross-Site Request Forgery]: https://en.wikipedia.org/wiki/Cross-site_request_forgery
