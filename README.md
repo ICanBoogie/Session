@@ -49,10 +49,10 @@ $session['baz'] = 'dib';
 #
 # Using isolated session segments
 #
-$segment = $session->fragments['Vendor\NameSpace'];
+$segment = $session->segments['Vendor\NameSpace'];
 $segment['bar'] = 123;
-echo $session->fragments['Vendor\NameSpace']['bar']; // 123
-$session->fragments['Vendor\NameSpace']['bar'] = 456;
+echo $session->segments['Vendor\NameSpace']['bar']; // 123
+$session->segments['Vendor\NameSpace']['bar'] = 456;
 echo $segment['bar']; // 456
 
 #
@@ -141,6 +141,52 @@ return [
 ];
 ```
 
+
+
+
+
+## Session segments
+
+Session segments provide a safe place for components to store their values without conflicts. That is, two components may safely use a same key because their value is stored in different session _segments_. Segments act as namespaces for session values. It is then important to choose a safe namespace, a class name is often the safest option.
+
+Session and session segments instances all implement the [SessionSegment][] interface. Components requiring session storage should use that interface rather than the [Session][] class.
+
+> **Note**: Obtaining a segment does not start a session, only read/write may automatically start a session. So don't hesitate to obtain session segments.
+
+The following example demonstrates how a session segment might be injected into a controller:
+
+```php
+<?php
+
+use ICanBoogie\SessionSegment;
+
+class UserController
+{
+	/**
+	 * @var SessionSegment
+	 */
+	private $session;
+	
+	public function __construct(SessionSegment $session)
+	{
+		$this->session = $session;
+	}
+	
+	public function action_post_login()
+	{
+		// …
+		
+		$this->session['user_id'] = $user->id;
+	}
+}
+
+// …
+
+use ICanBoogie\Session;
+
+$session = new Session;
+$controller = new UserController($session->segments[UserControlller::class]);
+```
 
 
 
@@ -285,6 +331,8 @@ The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
 
 
-[Session]:    http://api.icanboogie.org/session/latest/class-ICanBoogie.Session.html
+[documentation]:  http://api.icanboogie.org/session/latest/
+[Session]:        http://api.icanboogie.org/session/latest/class-ICanBoogie.Session.html
+[SessionSegment]: http://api.icanboogie.org/session/latest/class-ICanBoogie.SessionSegment.html
 [ICanBoogie]: https://github.com/ICanBoogie/ICanBoogie
 [CSRF]:       https://en.wikipedia.org/wiki/Cross-site_request_forgery
