@@ -52,7 +52,10 @@ class Session implements SessionOptions, SessionSegment
 		SegmentTrait::__get insteadof AccessorTrait;
 	}
 
-	const TOKEN_NAME = 'session_token';
+	/**
+	 * Name of the session token, may be used as form hidden input name.
+	 */
+	const TOKEN_NAME = '__SESSION_TOKEN__';
 
 	/**
 	 * @return string
