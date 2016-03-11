@@ -285,12 +285,12 @@ The following example demonstrates how to use the session token with a `POST` fo
 ?>
 
 <form method="POST" action="/articles">
-	<input type="hidden" value="<?= $session->token ?>" name="_session_token />
+	<input type="hidden" value="<?= $session->token ?>" name="_session_token" />
 	<!-- the remainder of the form … -->
 </form>
 ```
 
-When processing an unsafe request, make sure that the session token is valid:
+When processing an unsafe request, make sure the session token is valid:
 
 ```php
 <?php
@@ -309,7 +309,7 @@ if (in_array($_SERVER['REQUEST_METHOD'], [ 'POST', 'PUT', 'DELETE' ]))
 	}
 	else
 	{
-		// Token is not verified, we should throw an exception.
+		// Token verification failed, we should throw an exception.
 	}
 }
 ```
