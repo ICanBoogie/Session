@@ -83,6 +83,13 @@ trait FlashTrait
 	 */
 	protected function &get_flash_reference()
 	{
-		return $this->segment->reference[SessionFlash::SESSION_FLASH];
+		$reference = &$this->segment->reference[SessionFlash::SESSION_FLASH];
+
+		if ($reference === null)
+		{
+			$reference = [];
+		}
+
+		return $reference;
 	}
 }

@@ -57,7 +57,14 @@ class Segment implements SessionSegment
 	 */
 	protected function &get_reference()
 	{
-		return $this->session->reference[$this->segment_name];
+		$reference = &$this->session->reference[$this->segment_name];
+
+		if ($reference === null)
+		{
+			$reference = [];
+		}
+
+		return $reference;
 	}
 
 	/**
