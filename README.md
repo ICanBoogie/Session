@@ -391,9 +391,10 @@ The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
 
 
-[documentation]:  http://api.icanboogie.org/session/latest/
-[Session]:        http://api.icanboogie.org/session/latest/class-ICanBoogie.Session.html
-[SessionSegment]: http://api.icanboogie.org/session/latest/class-ICanBoogie.SessionSegment.html
-[ICanBoogie]: https://github.com/ICanBoogie/ICanBoogie
+[documentation]:  https://icanboogie.org/api/session/master/
+[ICanBoogie]:     https://icanboogie.org/
+[Session]:        https://icanboogie.org/api/session/master/class-ICanBoogie.Session.html
+[SessionSegment]: https://icanboogie.org/api/session/master/class-ICanBoogie.SessionSegment.html
+
 [CSRF]:                       https://en.wikipedia.org/wiki/Cross-site_request_forgery
 [Cross-Site Request Forgery]: https://en.wikipedia.org/wiki/Cross-site_request_forgery
