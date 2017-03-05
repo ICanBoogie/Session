@@ -12,6 +12,7 @@
 namespace ICanBoogie;
 
 use ICanBoogie\Session\CookieParams;
+use ICanBoogie\Session\RuntimeSessionHandler;
 use ICanBoogie\Session\SegmentCollection;
 
 class SessionTest extends \PHPUnit_Framework_TestCase
@@ -28,8 +29,6 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 
 	public function setUp()
 	{
-		session_set_save_handler(new DummySessionHandler);
-
 		$this->session_id = sha1(uniqid());
 		$this->session = $this
 			->getMockBuilder(Session::class)

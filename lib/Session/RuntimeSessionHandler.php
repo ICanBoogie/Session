@@ -9,13 +9,24 @@
  * file that was distributed with this source code.
  */
 
-namespace ICanBoogie;
+namespace ICanBoogie\Session;
 
 /**
- * A session handler doing nothing.
+ * A session handler that persist data during run time.
  */
-class DummySessionHandler extends \SessionHandler
+class RuntimeSessionHandler extends \SessionHandler
 {
+	/**
+	 * Register a new instance of the class as save handler.
+	 */
+	static public function register()
+	{
+		session_set_save_handler(new static);
+	}
+
+	/**
+	 * @var mixed
+	 */
 	private $data;
 
 	/**
