@@ -1,10 +1,10 @@
 # Session
 
 [![Release](https://img.shields.io/packagist/v/icanboogie/session.svg)](https://packagist.org/packages/icanboogie/session)
-[![Build Status](https://img.shields.io/travis/ICanBoogie/Session/master.svg)](http://travis-ci.org/ICanBoogie/Session)
+[![Build Status](https://img.shields.io/travis/ICanBoogie/Session.svg)](http://travis-ci.org/ICanBoogie/Session)
 [![HHVM](https://img.shields.io/hhvm/icanboogie/session.svg)](http://hhvm.h4cc.de/package/icanboogie/session)
-[![Code Quality](https://img.shields.io/scrutinizer/g/ICanBoogie/Session/master.svg)](https://scrutinizer-ci.com/g/ICanBoogie/Session)
-[![Code Coverage](https://img.shields.io/coveralls/ICanBoogie/Session/master.svg)](https://coveralls.io/r/ICanBoogie/Session)
+[![Code Quality](https://img.shields.io/scrutinizer/g/ICanBoogie/Session.svg)](https://scrutinizer-ci.com/g/ICanBoogie/Session)
+[![Code Coverage](https://img.shields.io/coveralls/ICanBoogie/Session.svg)](https://coveralls.io/r/ICanBoogie/Session)
 [![Packagist](https://img.shields.io/packagist/dt/icanboogie/session.svg)](https://packagist.org/packages/icanboogie/session)
 
 The **icanboogie/session** package provides an interface to easily manage PHP sessions. You create a
@@ -376,8 +376,8 @@ clean` command.
 
 The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
-[![Build Status](https://img.shields.io/travis/ICanBoogie/Session/master.svg)](http://travis-ci.org/ICanBoogie/Session)
-[![Code Coverage](https://img.shields.io/coveralls/ICanBoogie/Session/master.svg)](https://coveralls.io/r/ICanBoogie/Session)
+[![Build Status](https://img.shields.io/travis/ICanBoogie/Session.svg)](http://travis-ci.org/ICanBoogie/Session)
+[![Code Coverage](https://img.shields.io/coveralls/ICanBoogie/Session.svg)](https://coveralls.io/r/ICanBoogie/Session)
 
 
 

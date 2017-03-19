@@ -18,6 +18,8 @@ class RuntimeSessionHandler extends \SessionHandler
 {
 	/**
 	 * Register a new instance of the class as save handler.
+	 *
+	 * @codeCoverageIgnore
 	 */
 	static public function register()
 	{
