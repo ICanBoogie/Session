@@ -20,12 +20,11 @@
 		"source": "https://github.com/ICanBoogie/Session"
 	},
 	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"prefer-dist": true,
 	"require": {
-		"php": ">=5.5.0",
+		"php": ">=5.5",
 		"icanboogie/accessor": "^1.0"
-	},
-	"require-dev": {
-		"phpunit/phpunit": "^4.8"
 	},
 	"autoload": {
 		"psr-4": {
