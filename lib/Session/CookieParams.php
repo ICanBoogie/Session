@@ -16,15 +16,25 @@ namespace ICanBoogie\Session;
  */
 interface CookieParams
 {
-	const OPTION_LIFETIME = 'lifetime';
-	const OPTION_PATH = 'path';
-	const OPTION_DOMAIN = 'domain';
-	const OPTION_SECURE = 'secure';
-	const OPTION_HTTP_ONLY = 'httponly';
+	public const OPTION_LIFETIME = 'lifetime';
+	public const OPTION_PATH = 'path';
+	public const OPTION_DOMAIN = 'domain';
+	public const OPTION_SECURE = 'secure';
+	public const OPTION_HTTP_ONLY = 'httponly';
 
-	const DEFAULT_LIFETIME = 0;
-	const DEFAULT_PATH = null;
-	const DEFAULT_DOMAIN = null;
-	const DEFAULT_SECURE = null;
-	const DEFAULT_HTTP_ONLY = null;
+	public const DEFAULT_LIFETIME = 0;
+	public const DEFAULT_PATH = null;
+	public const DEFAULT_DOMAIN = null;
+	public const DEFAULT_SECURE = null;
+	public const DEFAULT_HTTP_ONLY = null;
+
+	public const DEFAULTS = [
+
+		self::OPTION_LIFETIME => self::DEFAULT_LIFETIME,
+		self::OPTION_PATH => self::DEFAULT_PATH,
+		self::OPTION_DOMAIN => self::DEFAULT_DOMAIN,
+		self::OPTION_SECURE => self::DEFAULT_SECURE,
+		self::OPTION_HTTP_ONLY => self::DEFAULT_HTTP_ONLY,
+
+	];
 }

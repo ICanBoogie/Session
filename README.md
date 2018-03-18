@@ -31,7 +31,7 @@ $session = new Session;
 #
 if (!isset($session['bar']))
 {
-	$session['bar'] = 'foo';
+    $session['bar'] = 'foo';
 }
 
 #
@@ -104,14 +104,14 @@ use ICanBoogie\Session\CookieParams;
 
 $session = new Session([
 
-	Session::OPTION_NAME => 'SID',
-	Session::OPTION_CACHE_LIMITER => 'public',
-	Session::OPTION_COOKIE_PARAMS => [
+    Session::OPTION_NAME => 'SID',
+    Session::OPTION_CACHE_LIMITER => 'public',
+    Session::OPTION_COOKIE_PARAMS => [
 
-		CookieParams::OPTION_DOMAIN => '.mydomain.tld',
-		CookieParams::OPTION_SECURE => true
+        CookieParams::OPTION_DOMAIN => '.mydomain.tld',
+        CookieParams::OPTION_SECURE => true
 
-	]
+    ]
 
 ]);
 ```
@@ -128,14 +128,14 @@ use ICanBoogie\SessionOptions as Session;
 
 return [
 
-	Session::OPTION_NAME => 'SID',
-	Session::OPTION_CACHE_LIMITER => 'public',
-	Session::OPTION_COOKIE_PARAMS => [
+    Session::OPTION_NAME => 'SID',
+    Session::OPTION_CACHE_LIMITER => 'public',
+    Session::OPTION_COOKIE_PARAMS => [
 
-		CookieParams::OPTION_DOMAIN => '.mydomain.tld',
-		CookieParams::OPTION_SECURE => true
+        CookieParams::OPTION_DOMAIN => '.mydomain.tld',
+        CookieParams::OPTION_SECURE => true
 
-	]
+    ]
 
 ];
 ```
@@ -166,22 +166,22 @@ use ICanBoogie\SessionSegment;
 
 class UserController
 {
-	/**
-	 * @var SessionSegment
-	 */
-	private $session;
-	
-	public function __construct(SessionSegment $session)
-	{
-		$this->session = $session;
-	}
-	
-	public function action_post_login()
-	{
-		// …
-		
-		$this->session['user_id'] = $user->id;
-	}
+    /**
+     * @var SessionSegment
+     */
+    private $session;
+    
+    public function __construct(SessionSegment $session)
+    {
+        $this->session = $session;
+    }
+    
+    public function action_post_login()
+    {
+        // …
+        
+        $this->session['user_id'] = $user->id;
+    }
 }
 
 // …
@@ -284,8 +284,8 @@ The following example demonstrates how to use the session token with a `POST` fo
 ?>
 
 <form method="POST" action="/articles">
-	<input type="hidden" value="<?= $session->token ?>" name="_session_token" />
-	<!-- the remainder of the form … -->
+    <input type="hidden" value="<?= $session->token ?>" name="_session_token" />
+    <!-- the remainder of the form … -->
 </form>
 ```
 
@@ -300,16 +300,16 @@ When processing an unsafe request, make sure the session token is valid:
 
 if (in_array($_SERVER['REQUEST_METHOD'], [ 'POST', 'PUT', 'DELETE' ]))
 {
-	$token = isset($_POST['_session_token']) ? $_POST['_session_token'] : null;
-	
-	if ($session->verify_token($token))
-	{
-		// Token is verified, we can proceed with the request.
-	}
-	else
-	{
-		// Token verification failed, we should throw an exception.
-	}
+    $token = isset($_POST['_session_token']) ? $_POST['_session_token'] : null;
+    
+    if ($session->verify_token($token))
+    {
+        // Token is verified, we can proceed with the request.
+    }
+    else
+    {
+        // Token verification failed, we should throw an exception.
+    }
 }
 ```
 
@@ -326,7 +326,7 @@ if (in_array($_SERVER['REQUEST_METHOD'], [ 'POST', 'PUT', 'DELETE' ]))
 
 ## Requirements
 
-The package requires PHP 5.5 or later.
+The package requires PHP 7.1 or later.
 
 
 
@@ -348,7 +348,7 @@ $ composer require icanboogie/session
 
 The package is [available on GitHub](https://github.com/ICanBoogie/Session), its repository can be cloned with the following command line:
 
-	$ git clone https://github.com/ICanBoogie/Session.git
+    $ git clone https://github.com/ICanBoogie/Session.git
 
 
 
@@ -390,10 +390,10 @@ The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
 
 
-[documentation]:  https://icanboogie.org/api/session/master/
 [ICanBoogie]:     https://icanboogie.org/
-[Session]:        https://icanboogie.org/api/session/master/class-ICanBoogie.Session.html
-[SessionSegment]: https://icanboogie.org/api/session/master/class-ICanBoogie.SessionSegment.html
+[documentation]:  https://icanboogie.org/api/session/2.0/
+[Session]:        https://icanboogie.org/api/session/2.0/class-ICanBoogie.Session.html
+[SessionSegment]: https://icanboogie.org/api/session/2.0/class-ICanBoogie.SessionSegment.html
 
 [CSRF]:                       https://en.wikipedia.org/wiki/Cross-site_request_forgery
 [Cross-Site Request Forgery]: https://en.wikipedia.org/wiki/Cross-site_request_forgery

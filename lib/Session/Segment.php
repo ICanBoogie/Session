@@ -22,8 +22,12 @@ use ICanBoogie\SessionSegment;
  * @property array $reference A reference to the segment in the session.
  * @property SessionFlash $flash The session segment flash.
  */
-class Segment implements SessionSegment
+final class Segment implements SessionSegment
 {
+	/**
+	 * @uses get_reference
+	 * @uses get_flash
+	 */
 	use AccessorTrait, SegmentTrait
 	{
 		SegmentTrait::__get insteadof AccessorTrait;
@@ -44,18 +48,12 @@ class Segment implements SessionSegment
 	 */
 	private $flash;
 
-	/**
-	 * @return SessionFlash
-	 */
-	protected function get_flash()
+	private function get_flash(): SessionFlash
 	{
 		return $this->flash ?: $this->flash = new Flash($this);
 	}
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function &get_reference()
+	private function &get_reference(): array
 	{
 		$reference = &$this->session->reference[$this->segment_name];
 
@@ -67,11 +65,7 @@ class Segment implements SessionSegment
 		return $reference;
 	}
 
-	/**
-	 * @param string $segment_name
-	 * @param Session $session
-	 */
-	public function __construct($segment_name, Session $session)
+	public function __construct(string $segment_name, Session $session)
 	{
 		$this->segment_name = $segment_name;
 		$this->session = $session;
@@ -80,7 +74,7 @@ class Segment implements SessionSegment
 	/**
 	 * @inheritdoc
 	 */
-	public function clear()
+	public function clear(): void
 	{
 		$reference = &$this->get_reference();
 		$reference = [];

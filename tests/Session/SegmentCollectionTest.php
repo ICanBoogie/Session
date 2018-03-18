@@ -13,7 +13,7 @@ namespace ICanBoogie\Session;
 
 use ICanBoogie\Session;
 
-class SegmentCollectionTest extends \PHPUnit_Framework_TestCase
+class SegmentCollectionTest extends \PHPUnit\Framework\TestCase
 {
 	/**
 	 * @var Session

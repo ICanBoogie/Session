@@ -6,7 +6,7 @@ use ICanBoogie\Session;
 use ICanBoogie\SessionFlash;
 use ICanBoogie\SessionSegment;
 
-class FlashTest extends \PHPUnit_Framework_TestCase
+class FlashTest extends \PHPUnit\Framework\TestCase
 {
 	/**
 	 * @var Session

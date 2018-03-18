@@ -18,7 +18,7 @@ use ICanBoogie\SessionSegment;
 /**
  * A collection of session segments.
  */
-class SegmentCollection implements \ArrayAccess, \IteratorAggregate
+final class SegmentCollection implements \ArrayAccess, \IteratorAggregate
 {
 	/**
 	 * @var Session
@@ -30,9 +30,6 @@ class SegmentCollection implements \ArrayAccess, \IteratorAggregate
 	 */
 	private $segments = [];
 
-	/**
-	 * @param Session $session
-	 */
 	public function __construct(Session $session)
 	{
 		$this->session = $session;

@@ -21,7 +21,7 @@ class RuntimeSessionHandler extends \SessionHandler
 	 *
 	 * @codeCoverageIgnore
 	 */
-	static public function register()
+	static public function register(): void
 	{
 		session_set_save_handler(new static);
 	}

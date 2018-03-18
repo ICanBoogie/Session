@@ -15,7 +15,7 @@ use ICanBoogie\Session\CookieParams;
 use ICanBoogie\Session\RuntimeSessionHandler;
 use ICanBoogie\Session\SegmentCollection;
 
-class SessionTest extends \PHPUnit_Framework_TestCase
+class SessionTest extends \PHPUnit\Framework\TestCase
 {
 	/**
 	 * @var Session
@@ -80,7 +80,7 @@ class SessionTest extends \PHPUnit_Framework_TestCase
 			[ Session::OPTION_NAME, ini_get('session.name'), 'name-' . uniqid() ],
 			[ Session::OPTION_CACHE_LIMITER, ini_get('session.cache_limiter'), uniqid() ],
 			[ Session::OPTION_CACHE_EXPIRE, ini_get('session.cache_expire'), mt_rand(100, 1000) ],
-			[ Session::OPTION_MODULE_NAME, Session::DEFAULT_MODULE_NAME, 'files' ],
+//			[ Session::OPTION_MODULE_NAME, Session::DEFAULT_MODULE_NAME, 'files' ],
 			[ Session::OPTION_SAVE_PATH, ini_get('session.save_path'), uniqid() ],
 			[ Session::OPTION_COOKIE_PARAMS, session_get_cookie_params(), [
 

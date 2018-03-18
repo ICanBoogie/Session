@@ -17,6 +17,7 @@ use ICanBoogie\Session\Flash;
 use ICanBoogie\Session\NormalizeOptions;
 use ICanBoogie\Session\SegmentCollection;
 use ICanBoogie\Session\SegmentTrait;
+use function random_bytes;
 
 /**
  * Session.
@@ -47,6 +48,30 @@ use ICanBoogie\Session\SegmentTrait;
  */
 class Session implements SessionOptions, SessionSegment
 {
+	/**
+	 * @uses get_id
+	 * @uses set_id
+	 * @uses get_name
+	 * @uses set_name
+	 * @uses get_token
+	 * @uses get_cache_limiter
+	 * @uses set_cache_limiter
+	 * @uses get_cache_expire
+	 * @uses set_cache_expire
+	 * @uses get_module_name
+	 * @uses set_module_name
+	 * @uses get_save_path
+	 * @uses set_save_path
+	 * @uses get_cookie_params
+	 * @uses set_cookie_params
+	 * @uses get_status
+	 * @uses get_is_disabled
+	 * @uses get_has_none
+	 * @uses get_is_referenced
+	 * @uses get_reference
+	 * @uses get_segments
+	 * @uses get_flash
+	 */
 	use AccessorTrait, SegmentTrait
 	{
 		SegmentTrait::__get insteadof AccessorTrait;
@@ -58,130 +83,85 @@ class Session implements SessionOptions, SessionSegment
 	const TOKEN_NAME = '__SESSION_TOKEN__';
 
 	/**
-	 * @return string
-	 *
 	 * @codeCoverageIgnore
 	 */
-	protected function get_id()
+	protected function get_id(): string
 	{
 		return session_id();
 	}
 
-	/**
-	 * @param string $id
-	 */
-	protected function set_id($id)
+	private function set_id(string $id): void
 	{
 		session_id($id);
 	}
 
-	/**
-	 * @return string
-	 */
-	protected function get_name()
+	private function get_name(): string
 	{
 		return session_name();
 	}
 
-	/**
-	 * @param string $name
-	 */
-	protected function set_name($name)
+	private function set_name(string $name): void
 	{
 		session_name($name);
 	}
 
 	/**
-	 * @return string
+	 * @throws \Exception when the token cannot be generated.
 	 */
-	protected function get_token()
+	private function get_token(): string
 	{
 		$token = &$this[self::TOKEN_NAME];
 
-		if (!$token)
-		{
-			$token = $this->generate_token();
-		}
-
-		return $token;
+		return $token
+			?: $token = $this->generate_token();
 	}
 
-	/**
-	 * @return string
-	 */
-	protected function get_cache_limiter()
+	private function get_cache_limiter(): string
 	{
 		return session_cache_limiter();
 	}
 
-	/**
-	 * @param string $cache_limiter
-	 */
-	protected function set_cache_limiter($cache_limiter)
+	private function set_cache_limiter(string $cache_limiter): void
 	{
 		session_cache_limiter($cache_limiter);
 	}
 
-	/**
-	 * @return string
-	 */
-	protected function get_cache_expire()
+	private function get_cache_expire(): string
 	{
 		return session_cache_expire();
 	}
 
-	/**
-	 * @param string $cache_expire
-	 */
-	protected function set_cache_expire($cache_expire)
+	private function set_cache_expire(string $cache_expire)
 	{
 		session_cache_expire($cache_expire);
 	}
 
-	/**
-	 * @return string
-	 */
-	protected function get_module_name()
+	private function get_module_name(): string
 	{
 		return session_module_name();
 	}
 
-	/**
-	 * @param string $module
-	 */
-	protected function set_module_name($module)
+	private function set_module_name(string $module)
 	{
 		session_module_name($module);
 	}
 
-	/**
-	 * @return string
-	 */
-	protected function get_save_path()
+	private function get_save_path(): string
 	{
 		return session_save_path();
 	}
 
-	/**
-	 * @param string $path
-	 */
-	protected function set_save_path($path)
+	private function set_save_path(string $path): void
 	{
 		session_save_path($path);
 	}
 
-	/**
-	 * @return array
-	 */
-	protected function get_cookie_params()
+	private function get_cookie_params(): array
 	{
 		return session_get_cookie_params();
 	}
 
-	/**
-	 * @param array $params
-	 */
-	protected function set_cookie_params(array $params)
+	private function set_cookie_params(array $params): void
 	{
 		$lifetime = CookieParams::DEFAULT_LIFETIME;
 		$path     = CookieParams::DEFAULT_PATH;
@@ -194,42 +174,22 @@ class Session implements SessionOptions, SessionSegment
 		session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly);
 	}
 
-	/**
-	 * Return the current session status.
-	 *
-	 * @return int
-	 */
-	protected function get_status()
+	private function get_status(): int
 	{
 		return session_status();
 	}
 
-	/**
-	 * Whether sessions are enabled, and one exists.
-	 *
-	 * @return bool
-	 */
-	protected function get_is_active()
+	protected function get_is_active(): bool
 	{
 		return $this->status === PHP_SESSION_ACTIVE;
 	}
 
-	/**
-	 * Whether sessions are disabled.
-	 *
-	 * @return bool
-	 */
-	protected function get_is_disabled()
+	private function get_is_disabled(): bool
 	{
 		return $this->status === PHP_SESSION_DISABLED;
 	}
 
-	/**
-	 * Whether sessions are enabled, but none exists.
-	 *
-	 * @return bool
-	 */
-	protected function get_has_none()
+	private function get_has_none(): bool
 	{
 		return $this->status === PHP_SESSION_NONE;
 	}
@@ -239,15 +199,12 @@ class Session implements SessionOptions, SessionSegment
 	 *
 	 * @return bool
 	 */
-	protected function get_is_referenced()
+	private function get_is_referenced()
 	{
 		return !empty($_COOKIE[$this->name]);
 	}
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function &get_reference()
+	private function &get_reference(): array
 	{
 		$this->start_or_reuse();
 
@@ -259,9 +216,10 @@ class Session implements SessionOptions, SessionSegment
 	 */
 	private $segments;
 
-	protected function get_segments()
+	private function get_segments(): SegmentCollection
 	{
-		return $this->segments ?: $this->segments = new SegmentCollection($this);
+		return $this->segments
+			?: $this->segments = new SegmentCollection($this);
 	}
 
 	/**
@@ -272,9 +230,10 @@ class Session implements SessionOptions, SessionSegment
 	/**
 	 * @inheritdoc
 	 */
-	protected function get_flash()
+	private function get_flash(): SessionFlash
 	{
-		return $this->flash ?: $this->flash = new Flash($this);
+		return $this->flash
+			?: $this->flash = new Flash($this);
 	}
 
 	/**
@@ -300,7 +259,7 @@ class Session implements SessionOptions, SessionSegment
 	{
 		$this->assert_is_forwardable($name);
 
-		call_user_func_array("session_$name", $arguments);
+		("session_$name")(...$arguments);
 	}
 
 	/**
@@ -310,7 +269,7 @@ class Session implements SessionOptions, SessionSegment
 	 *
 	 * @throws \BadMethodCallException if the method is not forwardable
 	 */
-	protected function assert_is_forwardable($name)
+	private function assert_is_forwardable(string $name): void
 	{
 		if (!in_array($name, [ 'abort', 'commit', 'decode', 'destroy', 'encode', 'regenerate_id', 'reset' ]))
 		{
@@ -332,7 +291,7 @@ class Session implements SessionOptions, SessionSegment
 	 *
 	 * @codeCoverageIgnore
 	 */
-	public function start()
+	public function start(): bool
 	{
 		if (PHP_SAPI === 'cli')
 		{
@@ -341,7 +300,7 @@ class Session implements SessionOptions, SessionSegment
 				return false;
 			}
 
-			$_SESSION = &$_SESSION;
+			$_SESSION = [];
 
 			return true;
 		}
@@ -355,7 +314,7 @@ class Session implements SessionOptions, SessionSegment
 	/**
 	 * Start a new session or reuse the current one.
 	 */
-	public function start_or_reuse()
+	public function start_or_reuse(): void
 	{
 		if ($this->is_active)
 		{
@@ -372,7 +331,7 @@ class Session implements SessionOptions, SessionSegment
 	 *
 	 * @codeCoverageIgnore
 	 */
-	public function clear()
+	public function clear(): void
 	{
 		if (PHP_SAPI === 'cli')
 		{
@@ -388,8 +347,10 @@ class Session implements SessionOptions, SessionSegment
 	 * Update the current session id and token.
 	 *
 	 * @return bool `true` on success or `false` on failure.
+	 *
+	 * @throws \Exception when the token cannot be generated.
 	 */
-	public function regenerate()
+	public function regenerate(): bool
 	{
 		$this[self::TOKEN_NAME] = $this->generate_token();
 
@@ -397,13 +358,11 @@ class Session implements SessionOptions, SessionSegment
 	}
 
 	/**
-	 * Generate a session token.
-	 *
-	 * @return string
+	 * @throws \Exception
 	 */
-	protected function generate_token()
+	private function generate_token(): string
 	{
-		return hash('sha384', openssl_random_pseudo_bytes(4096));
+		return hash('sha384', random_bytes(4096));
 	}
 
 	/**
@@ -413,7 +372,7 @@ class Session implements SessionOptions, SessionSegment
 	 *
 	 * @return bool
 	 */
-	public function verify_token($token)
+	public function verify_token(string $token): bool
 	{
 		return $this[self::TOKEN_NAME] === $token;
 	}

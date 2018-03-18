@@ -21,10 +21,9 @@
 	},
 	"minimum-stability": "dev",
 	"prefer-stable": true,
-	"prefer-dist": true,
 	"require": {
-		"php": ">=5.5",
-		"icanboogie/accessor": "^1.0"
+		"php": "^7.1",
+		"icanboogie/accessor": "^2.0|^3.0"
 	},
 	"autoload": {
 		"psr-4": {

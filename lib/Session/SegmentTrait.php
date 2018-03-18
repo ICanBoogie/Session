@@ -15,6 +15,9 @@ use ICanBoogie\SessionFlash;
 
 /**
  * @property array $reference A reference to the session array.
+ * @property SessionFlash $flash The session segment flash.
+ *
+ * @see \ICanBoogie\SessionSegment
  */
 trait SegmentTrait
 {
@@ -76,24 +79,23 @@ trait SegmentTrait
 	 * Return the segment reference.
 	 *
 	 * @return array
+	 *
+	 * @codeCoverageIgnore
 	 */
-	abstract protected function &get_reference();
+	private function &get_reference(): array
+	{
+		throw new \BadMethodCallException(__FUNCTION__ . " should be implemented.");
+	}
 
 	/**
 	 * Return a session flash.
 	 *
 	 * @return SessionFlash
+	 *
+	 * @codeCoverageIgnore
 	 */
-	abstract protected function get_flash();
-
-	/**
-	 * Returns the value of an inaccessible property.
-	 *
-	 * @param string $property
-	 *
-	 * @return mixed
-	 *
-	 * @see \ICanBoogie\Accessor\AccessorTrait::accessor_get()
-	 */
-	abstract protected function accessor_get($property);
+	private function get_flash(): SessionFlash
+	{
+		throw new \BadMethodCallException(__FUNCTION__ . " should be implemented.");
+	}
 }

@@ -14,7 +14,7 @@ namespace ICanBoogie\Session;
 use ICanBoogie\Session;
 use ICanBoogie\SessionSegment;
 
-class SegmentTest extends \PHPUnit_Framework_TestCase
+class SegmentTest extends \PHPUnit\Framework\TestCase
 {
 	public function test_array_access()
 	{

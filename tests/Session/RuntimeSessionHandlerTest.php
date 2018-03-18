@@ -2,7 +2,7 @@
 
 namespace ICanBoogie\Session;
 
-class RuntimeSessionHandlerTest extends \PHPUnit_Framework_TestCase
+class RuntimeSessionHandlerTest extends \PHPUnit\Framework\TestCase
 {
 	public function test_handler()
 	{
