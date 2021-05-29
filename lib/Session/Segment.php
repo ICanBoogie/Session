@@ -50,7 +50,7 @@ final class Segment implements SessionSegment
 
 	private function get_flash(): SessionFlash
 	{
-		return $this->flash ?: $this->flash = new Flash($this);
+		return $this->flash ?? $this->flash = new Flash($this);
 	}
 
 	private function &get_reference(): array

@@ -24,7 +24,7 @@ trait SegmentTrait
 	/**
 	 * @inheritdoc
 	 */
-	public function offsetExists($offset)
+	public function offsetExists($offset): bool
 	{
 		return isset($this->get_reference()[$offset]);
 	}
@@ -59,11 +59,9 @@ trait SegmentTrait
 	 * **Note:** We override the method as to be able to return {@link $reference} as a reference
 	 * and not a value.
 	 *
-	 * @param string $name Property name.
-	 *
 	 * @return mixed
 	 */
-	public function &__get($name)
+	public function &__get(string $name)
 	{
 		if ($name === 'reference')
 		{
@@ -78,8 +76,6 @@ trait SegmentTrait
 	/**
 	 * Return the segment reference.
 	 *
-	 * @return array
-	 *
 	 * @codeCoverageIgnore
 	 */
 	private function &get_reference(): array
@@ -89,8 +85,6 @@ trait SegmentTrait
 
 	/**
 	 * Return a session flash.
-	 *
-	 * @return SessionFlash
 	 *
 	 * @codeCoverageIgnore
 	 */

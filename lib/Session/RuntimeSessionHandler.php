@@ -11,7 +11,6 @@
 
 namespace ICanBoogie\Session;
 
-use RuntimeException;
 use SessionHandler;
 
 /**

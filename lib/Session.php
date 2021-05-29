@@ -11,6 +11,7 @@
 
 namespace ICanBoogie;
 
+use Exception;
 use ICanBoogie\Accessor\AccessorTrait;
 use ICanBoogie\Session\CookieParams;
 use ICanBoogie\Session\Flash;
@@ -19,7 +20,6 @@ use ICanBoogie\Session\SegmentCollection;
 use ICanBoogie\Session\SegmentTrait;
 
 use function random_bytes;
-
 use function session_id;
 
 use const PHP_SAPI;
@@ -36,7 +36,7 @@ use const PHP_SAPI;
  * @property string $save_path Current session save path.
  * @property-read int $status Current session status.
  * @property-read bool $is_disabled Whether sessions are enabled, but none exists.
- * @property-read bool $is_active Whether sessions are enabled, and one exists.
+ * @property-read bool $is_active Whether sessions is active.
  * @property-read bool $has_none Whether sessions are enabled, but none exists.
  * @property-read bool $is_referenced Whether session id is referenced in the cookie.
  * @property-read SegmentCollection $segments Session segments.
@@ -70,6 +70,7 @@ class Session implements SessionOptions, SessionSegment
 	 * @uses get_cookie_params
 	 * @uses set_cookie_params
 	 * @uses get_status
+	 * @uses get_is_active
 	 * @uses get_is_disabled
 	 * @uses get_has_none
 	 * @uses get_is_referenced
@@ -119,7 +120,7 @@ class Session implements SessionOptions, SessionSegment
 	}
 
 	/**
-	 * @throws \Exception when the token cannot be generated.
+	 * @throws Exception when the token cannot be generated.
 	 */
 	private function get_token(): string
 	{
@@ -217,10 +218,8 @@ class Session implements SessionOptions, SessionSegment
 
 	/**
 	 * Whether sessions id is referenced in the cookie.
-	 *
-	 * @return bool
 	 */
-	private function get_is_referenced()
+	private function get_is_referenced(): bool
 	{
 		return !empty($_COOKIE[$this->name]);
 	}
@@ -240,7 +239,7 @@ class Session implements SessionOptions, SessionSegment
 	private function get_segments(): SegmentCollection
 	{
 		return $this->segments
-			?: $this->segments = new SegmentCollection($this);
+			?? $this->segments = new SegmentCollection($this);
 	}
 
 	/**
@@ -254,7 +253,7 @@ class Session implements SessionOptions, SessionSegment
 	private function get_flash(): SessionFlash
 	{
 		return $this->flash
-			?: $this->flash = new Flash($this);
+			?? $this->flash = new Flash($this);
 	}
 
 	/**
@@ -305,8 +304,6 @@ class Session implements SessionOptions, SessionSegment
 	 *
 	 * **Note:** If PHP is running from CLI the `session_start()` method is not invoked but a fake
 	 * `$_SESSION` is still created.
-	 *
-	 * @return bool
 	 *
 	 * @see session_start()
 	 *
@@ -367,9 +364,7 @@ class Session implements SessionOptions, SessionSegment
 	/**
 	 * Update the current session id and token.
 	 *
-	 * @return bool `true` on success or `false` on failure.
-	 *
-	 * @throws \Exception when the token cannot be generated.
+	 * @throws Exception when the token cannot be generated.
 	 */
 	public function regenerate(): bool
 	{
@@ -379,7 +374,7 @@ class Session implements SessionOptions, SessionSegment
 	}
 
 	/**
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	private function generate_token(): string
 	{
@@ -388,10 +383,6 @@ class Session implements SessionOptions, SessionSegment
 
 	/**
 	 * Verify that a given token matches the session's token.
-	 *
-	 * @param string $token
-	 *
-	 * @return bool
 	 */
 	public function verify_token(string $token): bool
 	{

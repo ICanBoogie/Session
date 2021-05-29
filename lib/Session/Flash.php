@@ -75,10 +75,8 @@ final class Flash implements SessionFlash
 
 	/**
 	 * Return the flash reference.
-	 *
-	 * @return array
 	 */
-	private function &get_flash_reference()
+	private function &get_flash_reference(): array
 	{
 		$reference = &$this->segment->reference[SessionFlash::SESSION_FLASH];
 

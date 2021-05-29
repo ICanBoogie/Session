@@ -1,7 +1,7 @@
 # customization
 
 PACKAGE_NAME = icanboogie/session
-PACKAGE_VERSION = 2.0
+PACKAGE_VERSION = 3.0
 PHPUNIT = vendor/bin/phpunit
 
 # do not edit the following lines

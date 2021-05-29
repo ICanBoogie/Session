@@ -11,13 +11,15 @@
 
 namespace ICanBoogie;
 
+use ArrayAccess;
+
 /**
  * An interface for session segments.
  *
  * @property array $reference A reference to the session segment array.
  * @property SessionFlash $flash The session segment flash.
  */
-interface SessionSegment extends \ArrayAccess
+interface SessionSegment extends ArrayAccess
 {
 	/**
 	 * Clear all data from the segment.

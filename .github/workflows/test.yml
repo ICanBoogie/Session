@@ -11,7 +11,6 @@ jobs:
     strategy:
       matrix:
         php-version:
-        - "7.1"
         - "7.2"
         - "7.3"
         - "7.4"
@@ -41,7 +40,7 @@ jobs:
       run: make test-coveralls
 
     - name: Upload code coverage
-      if: ${{ matrix.php-version == '7.1' }}
+      if: ${{ matrix.php-version == '7.2' }}
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |

@@ -11,10 +11,12 @@
 
 namespace ICanBoogie;
 
+use ArrayAccess;
+
 /**
  * An interface for session flash.
  */
-interface SessionFlash extends \ArrayAccess
+interface SessionFlash extends ArrayAccess
 {
-	const SESSION_FLASH = '__FLASH__';
+	public const SESSION_FLASH = '__FLASH__';
 }
