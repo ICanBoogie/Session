@@ -11,19 +11,22 @@
 
 namespace ICanBoogie\Session;
 
+use RuntimeException;
+use SessionHandler;
+
 /**
  * A session handler that persist data during run time.
  */
-class RuntimeSessionHandler extends \SessionHandler
+final class RuntimeSessionHandler extends SessionHandler
 {
 	/**
 	 * Register a new instance of the class as save handler.
 	 *
 	 * @codeCoverageIgnore
 	 */
-	static public function register(): void
+	static public function register(): bool
 	{
-		session_set_save_handler(new static);
+		return session_set_save_handler(new self);
 	}
 
 	/**
@@ -34,7 +37,7 @@ class RuntimeSessionHandler extends \SessionHandler
 	/**
 	 * @inheritdoc
 	 */
-	public function close()
+	public function close(): bool
 	{
 		return true;
 	}
@@ -42,7 +45,7 @@ class RuntimeSessionHandler extends \SessionHandler
 	/**
 	 * @inheritdoc
 	 */
-	public function destroy($session_id)
+	public function destroy($id): bool
 	{
 		$this->data = null;
 
@@ -52,7 +55,7 @@ class RuntimeSessionHandler extends \SessionHandler
 	/**
 	 * @inheritdoc
 	 */
-	public function gc($maxlifetime)
+	public function gc($max_lifetime): bool
 	{
 		return true;
 	}
@@ -60,7 +63,7 @@ class RuntimeSessionHandler extends \SessionHandler
 	/**
 	 * @inheritdoc
 	 */
-	public function open($save_path, $session_id)
+	public function open($path, $name): bool
 	{
 		return true;
 	}
@@ -68,7 +71,7 @@ class RuntimeSessionHandler extends \SessionHandler
 	/**
 	 * @inheritdoc
 	 */
-	public function read($session_id)
+	public function read($id)
 	{
 		return $this->data;
 	}
@@ -76,9 +79,9 @@ class RuntimeSessionHandler extends \SessionHandler
 	/**
 	 * @inheritdoc
 	 */
-	public function write($session_id, $session_data)
+	public function write($id, $data): bool
 	{
-		$this->data = $session_data;
+		$this->data = $data;
 
 		return true;
 	}

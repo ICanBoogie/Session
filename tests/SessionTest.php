@@ -12,10 +12,10 @@
 namespace ICanBoogie;
 
 use ICanBoogie\Session\CookieParams;
-use ICanBoogie\Session\RuntimeSessionHandler;
 use ICanBoogie\Session\SegmentCollection;
+use PHPUnit\Framework\TestCase;
 
-class SessionTest extends \PHPUnit\Framework\TestCase
+final class SessionTest extends TestCase
 {
 	/**
 	 * @var Session
@@ -27,7 +27,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
 	 */
 	private $session_id;
 
-	public function setUp()
+	protected function setUp(): void
 	{
 		$this->session_id = sha1(uniqid());
 		$this->session = $this
@@ -56,11 +56,10 @@ class SessionTest extends \PHPUnit\Framework\TestCase
 	/**
 	 * @dataProvider provide_test_property
 	 *
-	 * @param string $property
 	 * @param mixed $default
 	 * @param mixed $custom
 	 */
-	public function test_property($property, $default, $custom)
+	public function test_property(string $property, $default, $custom)
 	{
 		ini_set('session.use_cookies', '1'); // so that cookie params work properly
 
@@ -143,7 +142,7 @@ class SessionTest extends \PHPUnit\Framework\TestCase
 		$this->session[$property] = $v1;
 		$reference = &$this->session->reference;
 
-		$this->assertInternalType('array', $reference);
+		$this->assertIsArray($reference);
 		$this->assertSame($v1, $reference[$property]);
 		$reference[$property] = $v2;
 		$this->assertSame($v2, $this->session[$property]);
@@ -169,13 +168,11 @@ class SessionTest extends \PHPUnit\Framework\TestCase
 		$this->session->commit();
 	}
 
-	/**
-	 * @expectedException \BadMethodCallException
-	 */
 	public function test_forward_invalid_method()
 	{
 		$method = 'method_' . uniqid();
 
+		$this->expectException(\BadMethodCallException::class);
 		$this->session->$method();
 	}
 

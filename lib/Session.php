@@ -17,7 +17,12 @@ use ICanBoogie\Session\Flash;
 use ICanBoogie\Session\NormalizeOptions;
 use ICanBoogie\Session\SegmentCollection;
 use ICanBoogie\Session\SegmentTrait;
+
 use function random_bytes;
+
+use function session_id;
+
+use const PHP_SAPI;
 
 /**
  * Session.
@@ -92,6 +97,10 @@ class Session implements SessionOptions, SessionSegment
 
 	private function set_id(string $id): void
 	{
+		if (session_id() === $id) {
+			return;
+		}
+
 		session_id($id);
 	}
 
@@ -102,6 +111,10 @@ class Session implements SessionOptions, SessionSegment
 
 	private function set_name(string $name): void
 	{
+		if (session_name() === $name) {
+			return;
+		}
+
 		session_name($name);
 	}
 
@@ -143,6 +156,10 @@ class Session implements SessionOptions, SessionSegment
 
 	private function set_module_name(string $module)
 	{
+		if (session_module_name() === $module) {
+			return;
+		}
+
 		session_module_name($module);
 	}
 
@@ -153,6 +170,10 @@ class Session implements SessionOptions, SessionSegment
 
 	private function set_save_path(string $path): void
 	{
+		if (session_save_path() === $path) {
+			return;
+		}
+
 		session_save_path($path);
 	}
 

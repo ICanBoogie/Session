@@ -25,7 +25,7 @@ class SegmentCollectionTest extends \PHPUnit\Framework\TestCase
 	 */
 	private $segments;
 
-	public function setUp()
+	protected function setUp(): void
 	{
 		$this->session = new Session;
 		$this->segments = new SegmentCollection($this->session);
@@ -73,11 +73,9 @@ class SegmentCollectionTest extends \PHPUnit\Framework\TestCase
 		$this->fail("There should have been one segment");
 	}
 
-	/**
-	 * @expectedException \ICanBoogie\OffsetNotWritable
-	 */
 	public function test_offset_set_should_throw_an_exception()
 	{
+		$this->expectException(\ICanBoogie\OffsetNotWritable::class);
 		$this->segments[uniqid()] = uniqid();
 	}
 }

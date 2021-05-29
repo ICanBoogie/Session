@@ -5,14 +5,10 @@ namespace ICanBoogie\Session;
 use ICanBoogie\Session;
 use ICanBoogie\SessionFlash;
 use ICanBoogie\SessionSegment;
+use PHPUnit\Framework\TestCase;
 
-class FlashTest extends \PHPUnit\Framework\TestCase
+final class FlashTest extends TestCase
 {
-	/**
-	 * @var Session
-	 */
-	private $session;
-
 	/**
 	 * @var string
 	 */
@@ -23,11 +19,11 @@ class FlashTest extends \PHPUnit\Framework\TestCase
 	 */
 	private $segment;
 
-	public function setUp()
+	protected function setUp(): void
 	{
-		$this->session = new Session;
+		$session = new Session;
 		$this->segment_name = uniqid();
-		$this->segment = new Segment($this->segment_name, $this->session);
+		$this->segment = new Segment($this->segment_name, $session);
 	}
 
 	public function test_flash()

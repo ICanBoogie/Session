@@ -1,7 +1,7 @@
 # Session
 
 [![Release](https://img.shields.io/packagist/v/icanboogie/session.svg)](https://packagist.org/packages/icanboogie/session)
-[![Build Status](https://img.shields.io/travis/ICanBoogie/Session.svg)](http://travis-ci.org/ICanBoogie/Session)
+[![Build Status](https://img.shields.io/github/workflow/status/ICanBoogie/Session/test)](https://github.com/ICanBoogie/Session/actions?query=workflow%3Atest)
 [![Code Quality](https://img.shields.io/scrutinizer/g/ICanBoogie/Session.svg)](https://scrutinizer-ci.com/g/ICanBoogie/Session)
 [![Code Coverage](https://img.shields.io/coveralls/ICanBoogie/Session.svg)](https://coveralls.io/r/ICanBoogie/Session)
 [![Packagist](https://img.shields.io/packagist/dt/icanboogie/session.svg)](https://packagist.org/packages/icanboogie/session)
@@ -170,16 +170,16 @@ class UserController
      * @var SessionSegment
      */
     private $session;
-    
+
     public function __construct(SessionSegment $session)
     {
         $this->session = $session;
     }
-    
+
     public function action_post_login()
     {
         // …
-        
+
         $this->session['user_id'] = $user->id;
     }
 }
@@ -301,7 +301,7 @@ When processing an unsafe request, make sure the session token is valid:
 if (in_array($_SERVER['REQUEST_METHOD'], [ 'POST', 'PUT', 'DELETE' ]))
 {
     $token = isset($_POST['_session_token']) ? $_POST['_session_token'] : null;
-    
+
     if ($session->verify_token($token))
     {
         // Token is verified, we can proceed with the request.
@@ -334,21 +334,9 @@ The package requires PHP 7.1 or later.
 
 ## Installation
 
-The recommended way to install this package is through [Composer](http://getcomposer.org/):
-
+```bash
+composer require icanboogie/session
 ```
-$ composer require icanboogie/session
-```
-
-
-
-
-
-### Cloning the repository
-
-The package is [available on GitHub](https://github.com/ICanBoogie/Session), its repository can be cloned with the following command line:
-
-    $ git clone https://github.com/ICanBoogie/Session.git
 
 
 
@@ -367,16 +355,9 @@ The directory can later be cleaned with the `make clean` command.
 
 ## Testing
 
-The test suite is ran with the `make test` command. [PHPUnit](https://phpunit.de/) and
-[Composer](http://getcomposer.org/) need to be globally available to run the suite. The command
-installs dependencies as required. The `make test-coverage` command runs test suite and also creates
-an HTML coverage report in `build/coverage`. The directory can later be cleaned with the `make
-clean` command.
-
-The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
-
-[![Build Status](https://img.shields.io/travis/ICanBoogie/Session.svg)](http://travis-ci.org/ICanBoogie/Session)
-[![Code Coverage](https://img.shields.io/coveralls/ICanBoogie/Session.svg)](https://coveralls.io/r/ICanBoogie/Session)
+Run `make test-container` to create and log into the test container, then run `make test` to run the
+test suite. Alternatively, run `make test-coverage` to run the test suite with test coverage. Open
+`build/coverage/index.html` to see the breakdown of the code coverage.
 
 
 
@@ -384,7 +365,7 @@ The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
 ## License
 
-**icanboogie/session** is licensed under the New BSD License - See the [LICENSE](LICENSE) file for details.
+**icanboogie/session** is released under the [New BSD License](LICENSE).
 
 
 
