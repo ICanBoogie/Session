@@ -61,7 +61,7 @@ final class FlashTest extends TestCase
 	public function test_getting_a_flash_should_not_start_session()
 	{
 		$session = $this->getMockBuilder(Session::class)
-			->setMethods([ 'start', 'start_or_reuse' ])
+			->onlyMethods([ 'start', 'start_or_reuse' ])
 			->disableOriginalConstructor()
 			->getMock();
 		$session

@@ -1,6 +1,10 @@
-FROM php:7.1-cli-buster
+FROM php:7.2-cli-buster
 
-RUN docker-php-ext-enable opcache
+RUN apt-get update && \
+	apt-get install -y autoconf pkg-config && \
+    pecl channel-update pecl.php.net && \
+    pecl install xdebug && \
+	docker-php-ext-enable opcache xdebug
 
 RUN echo '\
 xdebug.client_host=host.docker.internal\n\

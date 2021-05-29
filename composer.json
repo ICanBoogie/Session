@@ -25,6 +25,9 @@
 		"php": ">=7.1",
 		"icanboogie/accessor": "^2.0|^3.0|^4.0"
 	},
+	"require-dev": {
+		"phpunit/phpunit": "^8.5"
+	},
 	"autoload": {
 		"psr-4": {
 			"ICanBoogie\\": "lib/",
@@ -35,8 +38,5 @@
 		"psr-4": {
 			"ICanBoogie\\": "tests"
 		}
-	},
-	"require-dev": {
-		"phpunit/phpunit": "^7.5"
 	}
 }

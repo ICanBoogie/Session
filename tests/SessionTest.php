@@ -33,7 +33,8 @@ final class SessionTest extends TestCase
 		$this->session = $this
 			->getMockBuilder(Session::class)
 			->setConstructorArgs([ [ Session::OPTION_ID => $this->session_id ] ])
-			->setMethods([ 'get_id', 'regenerate_id' ])
+			->onlyMethods([ 'get_id' ])
+			->addMethods([ 'regenerate_id' ])
 			->getMockForAbstractClass();
 		$this->session
 			->expects($this->any())
@@ -179,7 +180,7 @@ final class SessionTest extends TestCase
 	public function test_should_not_start_if_session_already_active()
 	{
 		$session = $this->getMockBuilder(Session::class)
-			->setMethods([ 'get_is_active', 'start' ])
+			->onlyMethods([ 'get_is_active', 'start' ])
 			->getMock();
 		$session
 			->expects($this->once())
@@ -197,7 +198,7 @@ final class SessionTest extends TestCase
 	public function test_should_start_if_no_session_is_active()
 	{
 		$session = $this->getMockBuilder(Session::class)
-			->setMethods([ 'get_is_active', 'start' ])
+			->onlyMethods([ 'get_is_active', 'start' ])
 			->getMock();
 		$session
 			->expects($this->once())
