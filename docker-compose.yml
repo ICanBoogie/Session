@@ -3,7 +3,9 @@ version: "3.2"
 services:
   app:
     build: .
+    environment:
+      PHP_IDE_CONFIG: 'serverName=icanboogie-session-tests'
     volumes:
     - .:/app:delegated
-    - ~/.composer:/root/.composer
+    - ~/.composer:/root/.composer:delegated
     working_dir: /app

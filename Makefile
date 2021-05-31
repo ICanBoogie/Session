@@ -1,7 +1,6 @@
 # customization
 
 PACKAGE_NAME = icanboogie/session
-PACKAGE_VERSION = 3.0
 PHPUNIT = vendor/bin/phpunit
 
 # do not edit the following lines
@@ -11,11 +10,11 @@ usage:
 	@echo "test:  Runs the test suite.\ndoc:   Creates the documentation.\nclean: Removes the documentation, the dependencies and the Composer files."
 
 vendor:
-	@COMPOSER_ROOT_VERSION=$(PACKAGE_VERSION) composer install
+	@composer install
 
 .PHONY: update
 update:
-	@COMPOSER_ROOT_VERSION=$(PACKAGE_VERSION) composer update
+	@composer update
 
 test-dependencies: vendor
 
@@ -44,7 +43,7 @@ doc: vendor
 	@apigen generate \
 	--source lib \
 	--destination build/docs/ \
-	--title "$(PACKAGE_NAME) v$(PACKAGE_VERSION)" \
+	--title "$(PACKAGE_NAME)" \
 	--template-theme "bootstrap"
 
 .PHONY: clean
