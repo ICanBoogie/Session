@@ -4,7 +4,7 @@ services:
   app:
     build: .
     environment:
-      PHP_IDE_CONFIG: 'serverName=icanboogie-session-tests'
+      PHP_IDE_CONFIG: 'serverName=icanboogie-session'
     volumes:
     - .:/app:delegated
     - ~/.composer:/root/.composer:delegated

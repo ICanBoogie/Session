@@ -34,8 +34,8 @@ test-coveralls: test-dependencies
 
 .PHONY: test-container
 test-container:
-	@-docker-compose -f ./docker-compose.yml run --rm app bash
-	@docker-compose -f ./docker-compose.yml down -v
+	@-docker-compose run --rm app bash
+	@docker-compose down -v
 
 .PHONY: doc
 doc: vendor
@@ -51,4 +51,3 @@ clean:
 	@rm -fR build
 	@rm -fR vendor
 	@rm -f composer.lock
-
