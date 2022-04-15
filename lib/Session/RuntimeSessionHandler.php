@@ -23,15 +23,12 @@ final class RuntimeSessionHandler extends SessionHandler
 	 *
 	 * @codeCoverageIgnore
 	 */
-	static public function register(): bool
+	public static function register(): bool
 	{
-		return session_set_save_handler(new self);
+		return session_set_save_handler(new self());
 	}
 
-	/**
-	 * @var mixed
-	 */
-	private $data;
+	private mixed $data;
 
 	/**
 	 * @inheritdoc
@@ -44,7 +41,7 @@ final class RuntimeSessionHandler extends SessionHandler
 	/**
 	 * @inheritdoc
 	 */
-	public function destroy($id): bool
+	public function destroy(string $id): bool
 	{
 		$this->data = null;
 
@@ -54,7 +51,7 @@ final class RuntimeSessionHandler extends SessionHandler
 	/**
 	 * @inheritdoc
 	 */
-	public function gc($max_lifetime): bool
+	public function gc(int $max_lifetime): int|false
 	{
 		return true;
 	}
@@ -62,7 +59,7 @@ final class RuntimeSessionHandler extends SessionHandler
 	/**
 	 * @inheritdoc
 	 */
-	public function open($path, $name): bool
+	public function open(string $path, string $name): bool
 	{
 		return true;
 	}
@@ -70,15 +67,15 @@ final class RuntimeSessionHandler extends SessionHandler
 	/**
 	 * @inheritdoc
 	 */
-	public function read($id)
+	public function read(string $id): string|false
 	{
-		return $this->data;
+		return $this->data ?? false;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function write($id, $data): bool
+	public function write(string $id, string $data): bool
 	{
 		$this->data = $data;
 

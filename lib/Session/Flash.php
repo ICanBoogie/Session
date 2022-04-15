@@ -17,24 +17,19 @@ use ICanBoogie\SessionSegment;
 final class Flash implements SessionFlash
 {
 	/**
-	 * @var SessionSegment
-	 */
-	private $segment;
-
-	/**
 	 * @var array
 	 */
-	private $volatile = [];
+	private array $volatile = [];
 
-	public function __construct(SessionSegment $segment)
-	{
-		$this->segment = $segment;
+	public function __construct(
+		private readonly SessionSegment $segment
+	) {
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function offsetExists($offset)
+	public function offsetExists(mixed $offset): bool
 	{
 		return isset($this->volatile[$offset]) || isset($this->get_flash_reference()[$offset]);
 	}
@@ -42,12 +37,11 @@ final class Flash implements SessionFlash
 	/**
 	 * @inheritdoc
 	 */
-	public function &offsetGet($offset)
+	public function &offsetGet(mixed $offset): mixed
 	{
 		$reference = &$this->get_flash_reference();
 
-		if (isset($reference[$offset]))
-		{
+		if (isset($reference[$offset])) {
 			$this->volatile[$offset] = $reference[$offset];
 
 			unset($reference[$offset]);
@@ -59,7 +53,7 @@ final class Flash implements SessionFlash
 	/**
 	 * @inheritdoc
 	 */
-	public function offsetSet($offset, $value)
+	public function offsetSet(mixed $offset, mixed $value): void
 	{
 		$this->get_flash_reference()[$offset] = $this->volatile[$offset] = $value;
 	}
@@ -67,7 +61,7 @@ final class Flash implements SessionFlash
 	/**
 	 * @inheritdoc
 	 */
-	public function offsetUnset($offset)
+	public function offsetUnset(mixed $offset): void
 	{
 		unset($this->volatile[$offset]);
 		unset($this->get_flash_reference()[$offset]);
@@ -80,8 +74,7 @@ final class Flash implements SessionFlash
 	{
 		$reference = &$this->segment->reference[SessionFlash::SESSION_FLASH];
 
-		if ($reference === null)
-		{
+		if ($reference === null) {
 			$reference = [];
 		}
 

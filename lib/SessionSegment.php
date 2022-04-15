@@ -24,5 +24,5 @@ interface SessionSegment extends ArrayAccess
 	/**
 	 * Clear all data from the segment.
 	 */
-	public function clear();
+	public function clear(): void;
 }

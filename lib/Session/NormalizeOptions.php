@@ -12,6 +12,7 @@
 namespace ICanBoogie\Session;
 
 use ICanBoogie\SessionOptions;
+
 use function array_intersect_key;
 use function array_replace_recursive;
 use function session_cache_expire;
@@ -27,9 +28,9 @@ use function session_save_path;
 class NormalizeOptions
 {
 	/**
-	 * @param array $options
+	 * @param array<string, mixed> $options
 	 *
-	 * @return array Normalized options.
+	 * @return array<string, mixed> Normalized options.
 	 */
 	public function __invoke(array $options): array
 	{
@@ -43,20 +44,26 @@ class NormalizeOptions
 		return $options;
 	}
 
+	/**
+	 * @return array<string, mixed>
+	 */
 	private function resolve_default_options(): array
 	{
 		return [
 
-			SessionOptions::OPTION_NAME => session_name(),
-			SessionOptions::OPTION_CACHE_LIMITER => session_cache_limiter(),
-			SessionOptions::OPTION_CACHE_EXPIRE => session_cache_expire(),
-			SessionOptions::OPTION_COOKIE_PARAMS => $this->resolve_default_cookie_params(),
-			SessionOptions::OPTION_MODULE_NAME => session_module_name(),
-			SessionOptions::OPTION_SAVE_PATH => session_save_path(),
+				SessionOptions::OPTION_NAME => session_name(),
+				SessionOptions::OPTION_CACHE_LIMITER => session_cache_limiter(),
+				SessionOptions::OPTION_CACHE_EXPIRE => session_cache_expire(),
+				SessionOptions::OPTION_COOKIE_PARAMS => $this->resolve_default_cookie_params(),
+				SessionOptions::OPTION_MODULE_NAME => session_module_name(),
+				SessionOptions::OPTION_SAVE_PATH => session_save_path(),
 
-		] + SessionOptions::DEFAULTS;
+			] + SessionOptions::DEFAULTS;
 	}
 
+	/**
+	 * @return array<string, mixed>
+	 */
 	private function resolve_default_cookie_params(): array
 	{
 		return session_get_cookie_params() + CookieParams::DEFAULTS;

@@ -13,19 +13,14 @@ namespace ICanBoogie;
 
 use ICanBoogie\Session\CookieParams;
 use ICanBoogie\Session\SegmentCollection;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class SessionTest extends TestCase
 {
-	/**
-	 * @var Session
-	 */
-	private $session;
+	private Session|MockObject $session;
 
-	/**
-	 * @var string
-	 */
-	private $session_id;
+	private string $session_id;
 
 	protected function setUp(): void
 	{
@@ -56,11 +51,8 @@ final class SessionTest extends TestCase
 
 	/**
 	 * @dataProvider provide_test_property
-	 *
-	 * @param mixed $default
-	 * @param mixed $custom
 	 */
-	public function test_property(string $property, $default, $custom)
+	public function test_property(string $property, mixed $default, mixed $custom)
 	{
 		ini_set('session.use_cookies', '1'); // so that cookie params work properly
 
@@ -73,7 +65,7 @@ final class SessionTest extends TestCase
 		ini_set('session.use_cookies', '0');
 	}
 
-	public function provide_test_property()
+	public function provide_test_property(): array
 	{
 		return [
 

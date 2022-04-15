@@ -11,6 +11,7 @@
 
 namespace ICanBoogie\Session;
 
+use BadMethodCallException;
 use ICanBoogie\SessionFlash;
 
 /**
@@ -24,7 +25,7 @@ trait SegmentTrait
 	/**
 	 * @inheritdoc
 	 */
-	public function offsetExists($offset): bool
+	public function offsetExists(mixed $offset): bool
 	{
 		return isset($this->get_reference()[$offset]);
 	}
@@ -32,7 +33,7 @@ trait SegmentTrait
 	/**
 	 * @inheritdoc
 	 */
-	public function &offsetGet($offset)
+	public function &offsetGet(mixed $offset): mixed
 	{
 		return $this->get_reference()[$offset];
 	}
@@ -40,7 +41,7 @@ trait SegmentTrait
 	/**
 	 * @inheritdoc
 	 */
-	public function offsetSet($offset, $value)
+	public function offsetSet(mixed $offset, mixed $value): void
 	{
 		$this->get_reference()[$offset] = $value;
 	}
@@ -48,7 +49,7 @@ trait SegmentTrait
 	/**
 	 * @inheritdoc
 	 */
-	public function offsetUnset($offset)
+	public function offsetUnset(mixed $offset): void
 	{
 		unset($this->get_reference()[$offset]);
 	}
@@ -58,10 +59,8 @@ trait SegmentTrait
 	 *
 	 * **Note:** We override the method as to be able to return {@link $reference} as a reference
 	 * and not a value.
-	 *
-	 * @return mixed
 	 */
-	public function &__get(string $name)
+	public function &__get(string $name): mixed
 	{
 		if ($name === 'reference')
 		{
@@ -80,7 +79,7 @@ trait SegmentTrait
 	 */
 	private function &get_reference(): array
 	{
-		throw new \BadMethodCallException(__FUNCTION__ . " should be implemented.");
+		throw new BadMethodCallException(__FUNCTION__ . " should be implemented.");
 	}
 
 	/**
@@ -90,6 +89,6 @@ trait SegmentTrait
 	 */
 	private function get_flash(): SessionFlash
 	{
-		throw new \BadMethodCallException(__FUNCTION__ . " should be implemented.");
+		throw new BadMethodCallException(__FUNCTION__ . " should be implemented.");
 	}
 }

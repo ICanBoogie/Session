@@ -324,14 +324,6 @@ if (in_array($_SERVER['REQUEST_METHOD'], [ 'POST', 'PUT', 'DELETE' ]))
 
 
 
-## Requirements
-
-The package requires PHP 7.1 or later.
-
-
-
-
-
 ## Installation
 
 ```bash

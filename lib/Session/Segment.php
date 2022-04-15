@@ -28,25 +28,12 @@ final class Segment implements SessionSegment
 	 * @uses get_reference
 	 * @uses get_flash
 	 */
-	use AccessorTrait, SegmentTrait
-	{
+	use AccessorTrait;
+	use SegmentTrait {
 		SegmentTrait::__get insteadof AccessorTrait;
 	}
 
-	/**
-	 * @var string
-	 */
-	private $segment_name;
-
-	/**
-	 * @var Session
-	 */
-	private $session;
-
-	/**
-	 * @var SessionFlash
-	 */
-	private $flash;
+	private ?SessionFlash $flash = null;
 
 	private function get_flash(): SessionFlash
 	{
@@ -57,18 +44,17 @@ final class Segment implements SessionSegment
 	{
 		$reference = &$this->session->reference[$this->segment_name];
 
-		if ($reference === null)
-		{
+		if ($reference === null) {
 			$reference = [];
 		}
 
 		return $reference;
 	}
 
-	public function __construct(string $segment_name, Session $session)
-	{
-		$this->segment_name = $segment_name;
-		$this->session = $session;
+	public function __construct(
+		private readonly string $segment_name,
+		private readonly Session $session
+	) {
 	}
 
 	/**

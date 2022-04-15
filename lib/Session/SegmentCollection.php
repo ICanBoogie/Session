@@ -17,69 +17,74 @@ use ICanBoogie\OffsetNotWritable;
 use ICanBoogie\Session;
 use ICanBoogie\SessionSegment;
 use IteratorAggregate;
+use Traversable;
 
 /**
  * A collection of session segments.
  */
 final class SegmentCollection implements ArrayAccess, IteratorAggregate
 {
-	/**
-	 * @var Session
-	 */
-	private $session;
 
 	/**
 	 * @var SessionSegment[]
 	 */
-	private $segments = [];
+	private array $segments = [];
 
-	public function __construct(Session $session)
-	{
-		$this->session = $session;
+	public function __construct(
+		private readonly Session $session
+	) {
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function getIterator()
+	public function getIterator(): Traversable
 	{
 		return new ArrayIterator($this->segments);
 	}
 
 	/**
 	 * @inheritdoc
+	 *
+	 * @param mixed $offset Segment name.
 	 */
-	public function offsetExists($segment_name)
+	public function offsetExists(mixed $offset): bool
 	{
-		return isset($this->session[$segment_name]);
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function offsetGet($segment_name)
-	{
-		$segment = &$this->segments[$segment_name];
-
-		return $segment ?? $segment = new Segment($segment_name, $this->session);
+		return isset($this->session[$offset]);
 	}
 
 	/**
 	 * @inheritdoc
 	 *
-	 * @throws OffsetNotWritable in attempt to write on a segment.
+	 * @param mixed $offset Segment name.
 	 */
-	public function offsetSet($segment_name, $value)
+	public function offsetGet(mixed $offset): SessionSegment
 	{
-		throw new OffsetNotWritable("Segment offsets are not writable (`$segment_name`)`");
+		$segment = &$this->segments[$offset];
+
+		return $segment ?? $segment = new Segment($offset, $this->session);
 	}
 
 	/**
 	 * @inheritdoc
+	 *
+	 * @param mixed $offset Segment name.
+	 *
+	 * @throws OffsetNotWritable in attempt to write on a segment.
 	 */
-	public function offsetUnset($segment_name)
+	public function offsetSet(mixed $offset, mixed $value): void
 	{
-		unset($this->segments[$segment_name]);
-		unset($this->session[$segment_name]);
+		throw new OffsetNotWritable("Segment offsets are not writable (`$offset`)`");
+	}
+
+	/**
+	 * @inheritdoc
+	 *
+	 * @param mixed $offset Segment name.
+	 */
+	public function offsetUnset(mixed $offset): void
+	{
+		unset($this->segments[$offset]);
+		unset($this->session[$offset]);
 	}
 }

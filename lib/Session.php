@@ -11,6 +11,7 @@
 
 namespace ICanBoogie;
 
+use BadMethodCallException;
 use Exception;
 use ICanBoogie\Accessor\AccessorTrait;
 use ICanBoogie\Session\CookieParams;
@@ -78,15 +79,15 @@ class Session implements SessionOptions, SessionSegment
 	 * @uses get_segments
 	 * @uses get_flash
 	 */
-	use AccessorTrait, SegmentTrait
-	{
+	use AccessorTrait;
+	use SegmentTrait {
 		SegmentTrait::__get insteadof AccessorTrait;
 	}
 
 	/**
 	 * Name of the session token, may be used as form hidden input name.
 	 */
-	const TOKEN_NAME = '__SESSION_TOKEN__';
+	public const TOKEN_NAME = '__SESSION_TOKEN__';
 
 	/**
 	 * @codeCoverageIgnore
@@ -186,9 +187,9 @@ class Session implements SessionOptions, SessionSegment
 	private function set_cookie_params(array $params): void
 	{
 		$lifetime = CookieParams::DEFAULT_LIFETIME;
-		$path     = CookieParams::DEFAULT_PATH;
-		$domain   = CookieParams::DEFAULT_DOMAIN;
-		$secure   = CookieParams::DEFAULT_SECURE;
+		$path = CookieParams::DEFAULT_PATH;
+		$domain = CookieParams::DEFAULT_DOMAIN;
+		$secure = CookieParams::DEFAULT_SECURE;
 		$httponly = CookieParams::DEFAULT_HTTP_ONLY;
 
 		extract($params, EXTR_OVERWRITE);
@@ -231,51 +232,36 @@ class Session implements SessionOptions, SessionSegment
 		return $_SESSION;
 	}
 
-	/**
-	 * @var SegmentCollection
-	 */
-	private $segments;
+	private ?SegmentCollection $segments = null;
 
 	private function get_segments(): SegmentCollection
 	{
-		return $this->segments
-			?? $this->segments = new SegmentCollection($this);
+		return $this->segments ??= new SegmentCollection($this);
 	}
 
-	/**
-	 * @var SessionFlash
-	 */
-	private $flash;
+	private ?SessionFlash $flash = null;
 
-	/**
-	 * @inheritdoc
-	 */
 	private function get_flash(): SessionFlash
 	{
-		return $this->flash
-			?? $this->flash = new Flash($this);
+		return $this->flash ??= new Flash($this);
 	}
 
 	/**
-	 * @param array $options
+	 * @param array<string, mixed> $options
 	 */
 	public function __construct(array $options = [])
 	{
-		$normalize_options = new NormalizeOptions;
+		$normalize_options = new NormalizeOptions();
 
-		foreach ($normalize_options($options) as $option => $value)
-		{
+		foreach ($normalize_options($options) as $option => $value) {
 			$this->$option = $value;
 		}
 	}
 
 	/**
 	 * Forward selected method to session functions.
-	 *
-	 * @param string $name
-	 * @param array $arguments
 	 */
-	public function __call($name, array $arguments)
+	public function __call(string $name, array $arguments)
 	{
 		$this->assert_is_forwardable($name);
 
@@ -287,15 +273,14 @@ class Session implements SessionOptions, SessionSegment
 	 *
 	 * @param string $name
 	 *
-	 * @throws \BadMethodCallException if the method is not forwardable
+	 * @throws BadMethodCallException if the method is not forwardable
 	 */
 	private function assert_is_forwardable(string $name): void
 	{
-		if (!in_array($name, [ 'abort', 'commit', 'decode', 'destroy', 'encode', 'regenerate_id', 'reset' ]))
-		{
+		if (!in_array($name, [ 'abort', 'commit', 'decode', 'destroy', 'encode', 'regenerate_id', 'reset' ])) {
 			$method = get_called_class() . "::$name()";
 
-			throw new \BadMethodCallException("Unknown method: $method.");
+			throw new BadMethodCallException("Unknown method: $method.");
 		}
 	}
 
@@ -311,10 +296,8 @@ class Session implements SessionOptions, SessionSegment
 	 */
 	public function start(): bool
 	{
-		if (PHP_SAPI === 'cli')
-		{
-			if (isset($_SESSION))
-			{
+		if (PHP_SAPI === 'cli') {
+			if (isset($_SESSION)) {
 				return false;
 			}
 
@@ -334,8 +317,7 @@ class Session implements SessionOptions, SessionSegment
 	 */
 	public function start_or_reuse(): void
 	{
-		if ($this->is_active)
-		{
+		if ($this->is_active) {
 			return;
 		}
 
@@ -351,8 +333,7 @@ class Session implements SessionOptions, SessionSegment
 	 */
 	public function clear(): void
 	{
-		if (PHP_SAPI === 'cli')
-		{
+		if (PHP_SAPI === 'cli') {
 			$_SESSION = [];
 
 			return;
