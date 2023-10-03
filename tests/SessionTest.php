@@ -65,7 +65,7 @@ final class SessionTest extends TestCase
 		ini_set('session.use_cookies', '0');
 	}
 
-	public function provide_test_property(): array
+	public static function provide_test_property(): array
 	{
 		return [
 
@@ -159,6 +159,7 @@ final class SessionTest extends TestCase
 	public function test_forward_method()
 	{
 		$this->session->commit();
+		$this->assertTrue(true);
 	}
 
 	public function test_forward_invalid_method()
