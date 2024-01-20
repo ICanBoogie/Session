@@ -1,4 +1,5 @@
-FROM php:8.1-cli-buster
+ARG PHP_VERSION=8.1
+FROM php:${PHP_VERSION}-cli-bookworm
 
 RUN apt-get update && \
 	apt-get install -y autoconf pkg-config && \
