@@ -191,6 +191,12 @@ class Session implements SessionOptions, SessionSegment
      */
     private function set_cookie_params(array $params): void
     {
+        $is_enabled = filter_var(ini_get('session.use_cookies'), FILTER_VALIDATE_BOOLEAN);
+
+        if (!$is_enabled) {
+            return;
+        }
+
         $lifetime = CookieParams::DEFAULT_LIFETIME;
         $path = CookieParams::DEFAULT_PATH;
         $domain = CookieParams::DEFAULT_DOMAIN;

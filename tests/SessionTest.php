@@ -4,6 +4,7 @@ namespace ICanBoogie;
 
 use ICanBoogie\Session\CookieParams;
 use ICanBoogie\Session\SegmentCollection;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -36,9 +37,7 @@ final class SessionTest extends TestCase
             });
     }
 
-    /**
-     * @dataProvider provide_test_property
-     */
+    #[DataProvider('provide_test_property')]
     public function test_property(string $property, mixed $default, mixed $custom)
     {
         ini_set('session.use_cookies', '1'); // so that cookie params work properly
@@ -147,7 +146,7 @@ final class SessionTest extends TestCase
         $this->assertFalse(isset($session[$name]));
     }
 
-    public function test_forward_method()
+    public function test_forward_method(): void
     {
         $this->session->commit();
         $this->assertTrue(true);

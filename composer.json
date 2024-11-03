@@ -22,7 +22,7 @@
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"require": {
-		"php": ">=8.1",
+		"php": ">=8.4",
 		"icanboogie/accessor": "^6.0"
 	},
 	"require-dev": {
