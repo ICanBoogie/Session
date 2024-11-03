@@ -26,7 +26,8 @@
 		"icanboogie/accessor": "^6.0"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "^10.3"
+		"phpunit/phpunit": "^10.5",
+		"phpstan/phpstan": "^1.12"
 	},
 	"autoload": {
 		"psr-4": {

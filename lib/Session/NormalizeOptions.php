@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the ICanBoogie package.
- *
- * (c) Olivier Laviale <olivier.laviale@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace ICanBoogie\Session;
 
 use ICanBoogie\SessionOptions;
@@ -25,47 +16,47 @@ use function session_save_path;
 /**
  * Normalize session options.
  */
-class NormalizeOptions
+final class NormalizeOptions
 {
-	/**
-	 * @param array<string, mixed> $options
-	 *
-	 * @return array<string, mixed> Normalized options.
-	 */
-	public function __invoke(array $options): array
-	{
-		$default_options = static::resolve_default_options();
-		$options = array_intersect_key(array_replace_recursive($default_options, $options), $default_options);
+    /**
+     * @param array<string, mixed> $options
+     *
+     * @return array<string, mixed> Normalized options.
+     */
+    public function __invoke(array $options): array
+    {
+        $default_options = self::resolve_default_options();
+        $options = array_intersect_key(array_replace_recursive($default_options, $options), $default_options);
 
-		if (empty($options[SessionOptions::OPTION_ID])) {
-			unset($options[SessionOptions::OPTION_ID]);
-		}
+        if (empty($options[SessionOptions::OPTION_ID])) {
+            unset($options[SessionOptions::OPTION_ID]);
+        }
 
-		return $options;
-	}
+        return $options;
+    }
 
-	/**
-	 * @return array<string, mixed>
-	 */
-	private function resolve_default_options(): array
-	{
-		return [
+    /**
+     * @return array<string, mixed>
+     */
+    private function resolve_default_options(): array
+    {
+        return [
 
-				SessionOptions::OPTION_NAME => session_name(),
-				SessionOptions::OPTION_CACHE_LIMITER => session_cache_limiter(),
-				SessionOptions::OPTION_CACHE_EXPIRE => session_cache_expire(),
-				SessionOptions::OPTION_COOKIE_PARAMS => $this->resolve_default_cookie_params(),
-				SessionOptions::OPTION_MODULE_NAME => session_module_name(),
-				SessionOptions::OPTION_SAVE_PATH => session_save_path(),
+                SessionOptions::OPTION_NAME => session_name(),
+                SessionOptions::OPTION_CACHE_LIMITER => session_cache_limiter(),
+                SessionOptions::OPTION_CACHE_EXPIRE => session_cache_expire(),
+                SessionOptions::OPTION_COOKIE_PARAMS => $this->resolve_default_cookie_params(),
+                SessionOptions::OPTION_MODULE_NAME => session_module_name(),
+                SessionOptions::OPTION_SAVE_PATH => session_save_path(),
 
-			] + SessionOptions::DEFAULTS;
-	}
+            ] + SessionOptions::DEFAULTS;
+    }
 
-	/**
-	 * @return array<string, mixed>
-	 */
-	private function resolve_default_cookie_params(): array
-	{
-		return session_get_cookie_params() + CookieParams::DEFAULTS;
-	}
+    /**
+     * @return array<string, mixed>
+     */
+    private function resolve_default_cookie_params(): array
+    {
+        return session_get_cookie_params() + CookieParams::DEFAULTS;
+    }
 }

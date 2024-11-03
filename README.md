@@ -1,9 +1,7 @@
 # Session
 
 [![Release](https://img.shields.io/packagist/v/icanboogie/session.svg)](https://packagist.org/packages/icanboogie/session)
-[![Build Status](https://img.shields.io/github/workflow/status/ICanBoogie/Session/test)](https://github.com/ICanBoogie/Session/actions?query=workflow%3Atest)
-[![Code Quality](https://img.shields.io/scrutinizer/g/ICanBoogie/Session.svg)](https://scrutinizer-ci.com/g/ICanBoogie/Session)
-[![Code Coverage](https://img.shields.io/coveralls/ICanBoogie/Session.svg)](https://coveralls.io/r/ICanBoogie/Session)
+[![Code Coverage](https://coveralls.io/repos/github/ICanBoogie/Session/badge.svg?branch=6.0)](https://coveralls.io/r/ICanBoogie/Session?branch=6.0)
 [![Packagist](https://img.shields.io/packagist/dt/icanboogie/session.svg)](https://packagist.org/packages/icanboogie/session)
 
 The **icanboogie/session** package provides an interface to easily manage PHP sessions. You create a
@@ -77,6 +75,11 @@ echo $_SESSION['Vendor\NameSpace']['bar']; // 456
 
 
 
+#### Installation
+
+```shell
+composer require icanboogie/session
+```
 
 
 ## Getting started
@@ -315,51 +318,30 @@ if (in_array($_SERVER['REQUEST_METHOD'], [ 'POST', 'PUT', 'DELETE' ]))
 
 
 
-
-
-
 ----------
 
 
 
+## Continuous Integration
 
+The project is continuously tested by [GitHub actions](https://github.com/ICanBoogie/<Name>/actions).
 
-## Installation
-
-```bash
-composer require icanboogie/session
-```
-
-
-
-
-
-## Documentation
-
-The package is documented as part of the [ICanBoogie][] framework [documentation][]. You can
-generate the documentation for the package and its dependencies with the `make doc` command. The
-documentation is generated in the `build/docs` directory. [ApiGen](http://apigen.org/) is required.
-The directory can later be cleaned with the `make clean` command.
+[![Tests](https://github.com/ICanBoogie/Session/actions/workflows/test.yml/badge.svg?branch=6.0)](https://github.com/ICanBoogie/Session/actions/workflows/test.yml)
+[![Static Analysis](https://github.com/ICanBoogie/Session/actions/workflows/static-analysis.yml/badge.svg?branch=6.0)](https://github.com/ICanBoogie/Session/actions/workflows/static-analysis.yml)
+[![Code Style](https://github.com/ICanBoogie/Session/actions/workflows/code-style.yml/badge.svg?branch=6.0)](https://github.com/ICanBoogie/Session/actions/workflows/code-style.yml)
 
 
 
+## Code of Conduct
 
-
-## Testing
-
-Run `make test-container` to create and log into the test container, then run `make test` to run the
-test suite. Alternatively, run `make test-coverage` to run the test suite with test coverage. Open
-`build/coverage/index.html` to see the breakdown of the code coverage.
+This project adheres to a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in
+this project and its community, you're expected to uphold this code.
 
 
 
+## Contributing
 
-
-## License
-
-**icanboogie/session** is released under the [New BSD License](LICENSE).
-
-
+See [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 
 
