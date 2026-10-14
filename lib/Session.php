@@ -7,7 +7,6 @@ use Exception;
 use InvalidArgumentException;
 use ICanBoogie\Session\CookieParams;
 use ICanBoogie\Session\Flash;
-use ICanBoogie\Session\NormalizeOptions;
 use ICanBoogie\Session\SegmentCollection;
 use ICanBoogie\Session\SegmentTrait;
 
@@ -27,7 +26,7 @@ use const PHP_SAPI;
  * @method bool regenerate_id($delete_old_session = false)  Update the current session id with a newly generated one.
  * @method void reset() Re-initialize session array with original values.
  */
-class Session implements SessionOptions, SessionSegment
+class Session implements SessionSegment
 {
     use SegmentTrait;
 
@@ -238,15 +237,34 @@ class Session implements SessionOptions, SessionSegment
         get => $this->flash ??= new Flash($this);
     }
 
-    /**
-     * @param array<string, mixed> $options
-     */
-    public function __construct(array $options = [])
+    public function __construct(SessionOptions $options = new SessionOptions())
     {
-        $normalize_options = new NormalizeOptions();
+        if ($options->id !== null && $options->id !== '') {
+            $this->id = $options->id;
+        }
 
-        foreach ($normalize_options($options) as $option => $value) {
-            $this->$option = $value;
+        if ($options->name !== null) {
+            $this->name = $options->name;
+        }
+
+        if ($options->cache_limiter !== null) {
+            $this->cache_limiter = $options->cache_limiter;
+        }
+
+        if ($options->cache_expire !== null) {
+            $this->cache_expire = $options->cache_expire;
+        }
+
+        if ($options->module_name !== null) {
+            $this->module_name = $options->module_name;
+        }
+
+        if ($options->save_path !== null) {
+            $this->save_path = $options->save_path;
+        }
+
+        if ($options->cookie_params !== null) {
+            $this->cookie_params = $options->cookie_params;
         }
     }
 

@@ -98,46 +98,44 @@ $session = new Session;
 
 > **Note**: Nothing prevents you from using multiple [Session][] instances but it is not recommended.
 
-The following code demonstrates how options can be used to customize the session instance. Only a
-few options are demonstrated here, more are available.
+The following code demonstrates how options can be used to customize the session instance. Options
+are defined with the `SessionOptions` value object. Options left to `null` keep their current PHP
+setting. Only a few options are demonstrated here, more are available.
 
 ```php
 use ICanBoogie\Session;
+use ICanBoogie\SessionOptions;
 use ICanBoogie\Session\CookieParams;
 
-$session = new Session([
-
-    Session::OPTION_NAME => 'SID',
-    Session::OPTION_CACHE_LIMITER => 'public',
-    Session::OPTION_COOKIE_PARAMS => new CookieParams(
+$session = new Session(new SessionOptions(
+    name: 'SID',
+    cache_limiter: 'public',
+    cookie_params: new CookieParams(
         domain: '.mydomain.tld',
         secure: true,
     ),
-
-]);
+));
 ```
 
-If you are defining these options in a config file, you might want to use the light weight
-`SessionOptions` interface:
+Since `SessionOptions` and `CookieParams` are readonly, they can safely be shared, or exported with
+`var_export()` to be used in a config file:
 
 ```php
 <?php
 
 // config/session.php
 
+use ICanBoogie\SessionOptions;
 use ICanBoogie\Session\CookieParams;
-use ICanBoogie\SessionOptions as Session;
 
-return [
-
-    Session::OPTION_NAME => 'SID',
-    Session::OPTION_CACHE_LIMITER => 'public',
-    Session::OPTION_COOKIE_PARAMS => new CookieParams(
+return new SessionOptions(
+    name: 'SID',
+    cache_limiter: 'public',
+    cookie_params: new CookieParams(
         domain: '.mydomain.tld',
         secure: true,
     ),
-
-];
+);
 ```
 
 

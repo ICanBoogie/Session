@@ -25,6 +25,12 @@ None
   `http_only` and `same_site`. `Session::$cookie_params` and the `cookie_params` option are now `CookieParams`
   instances, instead of arrays. Use `CookieParams::from_array()` to convert the result of
   `session_get_cookie_params()`.
+- `ICanBoogie\SessionOptions` is now a `final readonly` value object, instead of an interface. The `OPTION_*`,
+  `DEFAULT_*` and `DEFAULTS` constants are replaced by promoted properties: `id`, `name`, `cache_limiter`,
+  `cache_expire`, `module_name`, `save_path` and `cookie_params`. A `null` property leaves the current PHP setting
+  untouched. `Session` no longer implements `SessionOptions`, and its constructor takes a `SessionOptions` instead
+  of an array.
+- Removed `ICanBoogie\Session\NormalizeOptions`.
 
 ### Deprecated Features
 

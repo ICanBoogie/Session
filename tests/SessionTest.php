@@ -13,7 +13,7 @@ final class SessionTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->session = new class ([ Session::OPTION_ID => sha1(uniqid()) ]) extends Session {
+        $this->session = new class (new SessionOptions(id: sha1(uniqid()))) extends Session {
             private string $current_id = '';
 
             public string|false $id {
@@ -53,13 +53,13 @@ final class SessionTest extends TestCase
     {
         return [
 
-            [ Session::OPTION_NAME, ini_get('session.name'), 'name-' . uniqid() ],
-            [ Session::OPTION_CACHE_LIMITER, ini_get('session.cache_limiter'), uniqid() ],
-            [ Session::OPTION_CACHE_EXPIRE, ini_get('session.cache_expire'), mt_rand(100, 1000) ],
-//            [ Session::OPTION_MODULE_NAME, Session::DEFAULT_MODULE_NAME, 'files' ],
-            [ Session::OPTION_SAVE_PATH, ini_get('session.save_path'), uniqid() ],
+            [ 'name', ini_get('session.name'), 'name-' . uniqid() ],
+            [ 'cache_limiter', ini_get('session.cache_limiter'), uniqid() ],
+            [ 'cache_expire', ini_get('session.cache_expire'), mt_rand(100, 1000) ],
+//            [ 'module_name', Session::DEFAULT_MODULE_NAME, 'files' ],
+            [ 'save_path', ini_get('session.save_path'), uniqid() ],
             [
-                Session::OPTION_COOKIE_PARAMS,
+                'cookie_params',
                 CookieParams::from_array(session_get_cookie_params()),
                 new CookieParams(
                     lifetime: mt_rand(100, 1000),
