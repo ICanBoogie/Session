@@ -5,6 +5,9 @@ namespace ICanBoogie\Session;
 use ICanBoogie\SessionFlash;
 use ICanBoogie\SessionSegment;
 
+/**
+ * @internal
+ */
 final class Flash implements SessionFlash
 {
     /**

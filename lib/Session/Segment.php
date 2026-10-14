@@ -8,6 +8,8 @@ use ICanBoogie\SessionSegment;
 
 /**
  * A session segment.
+ *
+ * @internal
  */
 final class Segment implements SessionSegment
 {

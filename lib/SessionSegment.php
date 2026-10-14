@@ -8,6 +8,8 @@ use ArrayAccess;
  * An interface for session segments.
  *
  * @extends ArrayAccess<string, mixed>
+ *
+ * @internal
  */
 interface SessionSegment extends ArrayAccess
 {

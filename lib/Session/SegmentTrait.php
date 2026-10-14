@@ -6,6 +6,8 @@ namespace ICanBoogie\Session;
  * Requires the using class to implement `$reference`.
  *
  * @see \ICanBoogie\SessionSegment
+ *
+ * @internal
  */
 trait SegmentTrait
 {

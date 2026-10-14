@@ -18,7 +18,7 @@ final class SessionTest extends TestCase
 
             public string|false $id {
                 get => $this->current_id;
-                set(string|false $value) {
+                set {
                     $this->current_id = $value === false ? '' : $value;
                 }
             }

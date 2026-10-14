@@ -14,6 +14,8 @@ use Traversable;
  *
  * @implements ArrayAccess<string, SessionSegment>
  * @implements IteratorAggregate<string, SessionSegment>
+ *
+ * @internal
  */
 final class SegmentCollection implements ArrayAccess, IteratorAggregate
 {

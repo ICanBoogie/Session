@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class ReadmeTest extends TestCase
 {
-    private const INI_KEYS = [ 'session.name', 'session.cache_limiter', 'session.use_cookies' ];
+    private const array INI_KEYS = [ 'session.name', 'session.cache_limiter', 'session.use_cookies' ];
 
     /**
      * @var array<string, string|false>

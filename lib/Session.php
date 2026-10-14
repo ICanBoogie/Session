@@ -3,11 +3,11 @@
 namespace ICanBoogie;
 
 use Exception;
-use InvalidArgumentException;
 use ICanBoogie\Session\CookieParams;
 use ICanBoogie\Session\Flash;
 use ICanBoogie\Session\SegmentCollection;
 use ICanBoogie\Session\SegmentTrait;
+use InvalidArgumentException;
 
 use function random_bytes;
 use function session_id;
@@ -24,14 +24,14 @@ class Session implements SessionSegment
     /**
      * Name of the session token, may be used as form hidden input name.
      */
-    public const TOKEN_NAME = '__SESSION_TOKEN__';
+    public const string TOKEN_NAME = '__SESSION_TOKEN__';
 
     /**
      * Current session id.
      */
     public string|false $id {
         get => session_id();
-        set(string|false $value) {
+        set {
             if ($value === false) {
                 throw new InvalidArgumentException("The session id cannot be `false`.");
             }
@@ -49,7 +49,7 @@ class Session implements SessionSegment
      */
     public string|false $name {
         get => session_name();
-        set(string|false $value) {
+        set {
             if ($value === false) {
                 throw new InvalidArgumentException("The session name cannot be `false`.");
             }
@@ -68,6 +68,9 @@ class Session implements SessionSegment
      * @throws Exception when the token cannot be generated.
      */
     public string $token {
+        /**
+         * @throws Exception
+         */
         get {
             /** @var string|null $token */
             $token = &$this[self::TOKEN_NAME];
@@ -82,7 +85,7 @@ class Session implements SessionSegment
      */
     public string|false $cache_limiter {
         get => session_cache_limiter();
-        set(string|false $value) {
+        set {
             if ($value === false) {
                 throw new InvalidArgumentException("The cache limiter cannot be `false`.");
             }
@@ -96,7 +99,7 @@ class Session implements SessionSegment
      */
     public int|false $cache_expire {
         get => session_cache_expire();
-        set(int|false $value) {
+        set {
             if ($value === false) {
                 throw new InvalidArgumentException("The cache expire cannot be `false`.");
             }
@@ -110,7 +113,7 @@ class Session implements SessionSegment
      */
     public string|false $module_name {
         get => session_module_name();
-        set(string|false $value) {
+        set {
             if ($value === false) {
                 throw new InvalidArgumentException("The session module cannot be `false`.");
             }
@@ -128,7 +131,7 @@ class Session implements SessionSegment
      */
     public string|false $save_path {
         get => session_save_path();
-        set(string|false $value) {
+        set {
             if ($value === false) {
                 throw new InvalidArgumentException("The session save path cannot be `false`.");
             }
