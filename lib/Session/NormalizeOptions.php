@@ -52,11 +52,8 @@ final class NormalizeOptions
             ] + SessionOptions::DEFAULTS;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function resolve_default_cookie_params(): array
+    private function resolve_default_cookie_params(): CookieParams
     {
-        return session_get_cookie_params() + CookieParams::DEFAULTS;
+        return CookieParams::from_array(session_get_cookie_params());
     }
 }

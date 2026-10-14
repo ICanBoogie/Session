@@ -153,18 +153,9 @@ class Session implements SessionOptions, SessionSegment
 
     /**
      * Session cookie parameters.
-     *
-     * @var array{
-     *     lifetime: int,
-     *     path: string,
-     *     domain: string,
-     *     secure: bool,
-     *     httponly: bool,
-     *     samesite: string
-     * }
      */
-    public array $cookie_params {
-        get => session_get_cookie_params();
+    public CookieParams $cookie_params {
+        get => CookieParams::from_array(session_get_cookie_params());
         set {
             $is_enabled = filter_var(ini_get('session.use_cookies'), FILTER_VALIDATE_BOOLEAN);
 
@@ -172,15 +163,15 @@ class Session implements SessionOptions, SessionSegment
                 return;
             }
 
-            $lifetime = CookieParams::DEFAULT_LIFETIME;
-            $path = CookieParams::DEFAULT_PATH;
-            $domain = CookieParams::DEFAULT_DOMAIN;
-            $secure = CookieParams::DEFAULT_SECURE;
-            $httponly = CookieParams::DEFAULT_HTTP_ONLY;
-
-            extract($value);
-
-            session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly);
+            // @phpstan-ignore-next-line argument.type (an empty `samesite` is valid)
+            session_set_cookie_params([
+                'lifetime' => $value->lifetime,
+                'path' => $value->path,
+                'domain' => $value->domain,
+                'secure' => $value->secure,
+                'httponly' => $value->http_only,
+                'samesite' => $value->same_site,
+            ]);
         }
     }
 

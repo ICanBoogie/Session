@@ -5,27 +5,64 @@ namespace ICanBoogie\Session;
 /**
  * Cookie params.
  */
-interface CookieParams
+final readonly class CookieParams
 {
-    public const OPTION_LIFETIME = 'lifetime';
-    public const OPTION_PATH = 'path';
-    public const OPTION_DOMAIN = 'domain';
-    public const OPTION_SECURE = 'secure';
-    public const OPTION_HTTP_ONLY = 'httponly';
+    /**
+     * @param int $lifetime Lifetime of the cookie in seconds. `0` means until the browser is closed.
+     * @param string $path Path on the domain where the cookie will work.
+     * @param string $domain Cookie domain.
+     * @param bool $secure Whether the cookie should only be sent over secure connections.
+     * @param bool $http_only Whether the cookie should only be accessible through the HTTP protocol.
+     * @param string $same_site Value of the `SameSite` attribute, e.g. `Lax`, `Strict` or `None`.
+     */
+    public function __construct(
+        public int $lifetime = 0,
+        public string $path = '/',
+        public string $domain = '',
+        public bool $secure = false,
+        public bool $http_only = false,
+        public string $same_site = '',
+    ) {
+    }
 
-    public const DEFAULT_LIFETIME = 0;
-    public const DEFAULT_PATH = null;
-    public const DEFAULT_DOMAIN = null;
-    public const DEFAULT_SECURE = null;
-    public const DEFAULT_HTTP_ONLY = null;
+    /**
+     * Restores an instance exported with `var_export()`.
+     *
+     * @param array{
+     *     lifetime: int,
+     *     path: string,
+     *     domain: string,
+     *     secure: bool,
+     *     http_only: bool,
+     *     same_site: string
+     * } $an_array
+     */
+    public static function __set_state(array $an_array): self
+    {
+        return new self(...$an_array);
+    }
 
-    public const DEFAULTS = [
-
-        self::OPTION_LIFETIME => self::DEFAULT_LIFETIME,
-        self::OPTION_PATH => self::DEFAULT_PATH,
-        self::OPTION_DOMAIN => self::DEFAULT_DOMAIN,
-        self::OPTION_SECURE => self::DEFAULT_SECURE,
-        self::OPTION_HTTP_ONLY => self::DEFAULT_HTTP_ONLY,
-
-    ];
+    /**
+     * Creates an instance from the array returned by `session_get_cookie_params()`.
+     *
+     * @param array{
+     *     lifetime?: int,
+     *     path?: string,
+     *     domain?: string,
+     *     secure?: bool,
+     *     httponly?: bool,
+     *     samesite?: string
+     * } $params
+     */
+    public static function from_array(array $params): self
+    {
+        return new self(
+            $params['lifetime'] ?? 0,
+            $params['path'] ?? '/',
+            $params['domain'] ?? '',
+            $params['secure'] ?? false,
+            $params['httponly'] ?? false,
+            $params['samesite'] ?? '',
+        );
+    }
 }

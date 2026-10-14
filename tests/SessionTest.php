@@ -60,16 +60,14 @@ final class SessionTest extends TestCase
             [ Session::OPTION_SAVE_PATH, ini_get('session.save_path'), uniqid() ],
             [
                 Session::OPTION_COOKIE_PARAMS,
-                session_get_cookie_params(),
-                [
-
-                    CookieParams::OPTION_LIFETIME => mt_rand(100, 1000),
-                    CookieParams::OPTION_PATH => '/' . uniqid(),
-                    CookieParams::OPTION_DOMAIN => uniqid(),
-                    CookieParams::OPTION_HTTP_ONLY => false,
-                    CookieParams::OPTION_SECURE => true
-
-                ] + session_get_cookie_params()
+                CookieParams::from_array(session_get_cookie_params()),
+                new CookieParams(
+                    lifetime: mt_rand(100, 1000),
+                    path: '/' . uniqid(),
+                    domain: uniqid(),
+                    secure: true,
+                    http_only: false,
+                ),
             ],
 
         ];

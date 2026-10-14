@@ -109,12 +109,10 @@ $session = new Session([
 
     Session::OPTION_NAME => 'SID',
     Session::OPTION_CACHE_LIMITER => 'public',
-    Session::OPTION_COOKIE_PARAMS => [
-
-        CookieParams::OPTION_DOMAIN => '.mydomain.tld',
-        CookieParams::OPTION_SECURE => true
-
-    ]
+    Session::OPTION_COOKIE_PARAMS => new CookieParams(
+        domain: '.mydomain.tld',
+        secure: true,
+    ),
 
 ]);
 ```
@@ -134,12 +132,10 @@ return [
 
     Session::OPTION_NAME => 'SID',
     Session::OPTION_CACHE_LIMITER => 'public',
-    Session::OPTION_COOKIE_PARAMS => [
-
-        CookieParams::OPTION_DOMAIN => '.mydomain.tld',
-        CookieParams::OPTION_SECURE => true
-
-    ]
+    Session::OPTION_COOKIE_PARAMS => new CookieParams(
+        domain: '.mydomain.tld',
+        secure: true,
+    ),
 
 ];
 ```
