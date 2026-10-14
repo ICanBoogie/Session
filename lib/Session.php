@@ -2,7 +2,6 @@
 
 namespace ICanBoogie;
 
-use BadMethodCallException;
 use Exception;
 use InvalidArgumentException;
 use ICanBoogie\Session\CookieParams;
@@ -17,14 +16,6 @@ use const PHP_SAPI;
 
 /**
  * Session.
- *
- * @method void abort() Discard session array changes and finish session.
- * @method void commit() Write session data and end session.
- * @method bool decode(string $data) Decodes session data from a session encoded string.
- * @method void destroy() Destroys all data registered to a session.
- * @method string encode() Encodes the current session data as a session encoded string.
- * @method bool regenerate_id($delete_old_session = false)  Update the current session id with a newly generated one.
- * @method void reset() Re-initialize session array with original values.
  */
 class Session implements SessionSegment
 {
@@ -269,30 +260,73 @@ class Session implements SessionSegment
     }
 
     /**
-     * Forward the selected method to session functions.
+     * Discard session array changes and finish session.
+     *
+     * @see session_abort()
      */
-    public function __call(string $name, array $arguments) // @phpstan-ignore-line
+    public function abort(): bool
     {
-        $this->can_forward($name);
-
-        // @phpstan-ignore-next-line
-        ("session_$name")(...$arguments);
+        return session_abort();
     }
 
     /**
-     * Assert that a method can be forwarded to a session function.
+     * Write session data and end session.
      *
-     * @param string $name
-     *
-     * @throws BadMethodCallException if the method cannot be forwarded
+     * @see session_write_close()
      */
-    private function can_forward(string $name): void
+    public function commit(): bool
     {
-        if (!in_array($name, [ 'abort', 'commit', 'decode', 'destroy', 'encode', 'regenerate_id', 'reset' ])) {
-            $method = get_called_class() . "::$name()";
+        return session_write_close();
+    }
 
-            throw new BadMethodCallException("Unknown method: $method.");
-        }
+    /**
+     * Decode session data from a session encoded string.
+     *
+     * @see session_decode()
+     */
+    public function decode(string $data): bool
+    {
+        return session_decode($data);
+    }
+
+    /**
+     * Destroy all data registered to a session.
+     *
+     * @see session_destroy()
+     */
+    public function destroy(): bool
+    {
+        return session_destroy();
+    }
+
+    /**
+     * Encode the current session data as a session encoded string.
+     *
+     * @see session_encode()
+     */
+    public function encode(): string|false
+    {
+        return session_encode();
+    }
+
+    /**
+     * Update the current session id with a newly generated one.
+     *
+     * @see session_regenerate_id()
+     */
+    public function regenerate_id(bool $delete_old_session = false): bool
+    {
+        return session_regenerate_id($delete_old_session);
+    }
+
+    /**
+     * Re-initialize session array with original values.
+     *
+     * @see session_reset()
+     */
+    public function reset(): bool
+    {
+        return session_reset();
     }
 
     /**

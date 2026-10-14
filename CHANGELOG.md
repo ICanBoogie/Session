@@ -31,6 +31,10 @@ None
   untouched. `Session` no longer implements `SessionOptions`, and its constructor takes a `SessionOptions` instead
   of an array.
 - Removed `ICanBoogie\Session\NormalizeOptions`.
+- `Session::__call()` is replaced by proper methods: `abort()`, `commit()`, `decode()`, `destroy()`, `encode()`,
+  `regenerate_id()` and `reset()`. They now return the result of the underlying `session_*()` function (`bool`, or
+  `string|false` for `encode()`), instead of nothing. Calling an unknown method throws `Error`, instead of
+  `BadMethodCallException`.
 
 ### Deprecated Features
 

@@ -141,19 +141,11 @@ final class SessionTest extends TestCase
         $this->assertFalse(isset($session[$name]));
     }
 
-    public function test_forward_method(): void
+    public function test_commit(): void
     {
         $this->expectNotToPerformAssertions();
 
         $this->session->commit();
-    }
-
-    public function test_forward_invalid_method(): void
-    {
-        $method = 'method_' . uniqid();
-
-        $this->expectException(\BadMethodCallException::class);
-        $this->session->$method();
     }
 
     public function test_should_not_start_if_session_already_active(): void
