@@ -4,7 +4,7 @@ namespace ICanBoogie;
 
 use BadMethodCallException;
 use Exception;
-use ICanBoogie\Accessor\AccessorTrait;
+use InvalidArgumentException;
 use ICanBoogie\Session\CookieParams;
 use ICanBoogie\Session\Flash;
 use ICanBoogie\Session\NormalizeOptions;
@@ -19,22 +19,6 @@ use const PHP_SAPI;
 /**
  * Session.
  *
- * @property string|false $id Current session id.
- * @property string|false $name Current session name.
- * @property string|false $cache_limiter Current cache limiter.
- * @property int|false $cache_expire Current cache expire.
- * @property array $cookie_params Session cookie parameters.
- * @property string|false $module_name Current session module.
- * @property string|false $save_path Current session save path.
- * @property-read int $status Current session status.
- * @property-read bool $is_disabled Whether sessions are enabled, but none exists.
- * @property-read bool $is_active Whether sessions is active.
- * @property-read bool $has_none Whether sessions are enabled, but none exists.
- * @property-read bool $is_referenced Whether session id is referenced in the cookie.
- * @property-read SegmentCollection $segments Session segments.
- * @property SessionFlash $flash The session flash.
- * @property-read string $token Current session token that can be used to prevent CSRF.
- *
  * @method void abort() Discard session array changes and finish session.
  * @method void commit() Write session data and end session.
  * @method bool decode(string $data) Decodes session data from a session encoded string.
@@ -45,35 +29,7 @@ use const PHP_SAPI;
  */
 class Session implements SessionOptions, SessionSegment
 {
-    /**
-     * @uses get_id
-     * @uses set_id
-     * @uses get_name
-     * @uses set_name
-     * @uses get_token
-     * @uses get_cache_limiter
-     * @uses set_cache_limiter
-     * @uses get_cache_expire
-     * @uses set_cache_expire
-     * @uses get_module_name
-     * @uses set_module_name
-     * @uses get_save_path
-     * @uses set_save_path
-     * @uses get_cookie_params
-     * @uses set_cookie_params
-     * @uses get_status
-     * @uses get_is_active
-     * @uses get_is_disabled
-     * @uses get_has_none
-     * @uses get_is_referenced
-     * @uses get_reference
-     * @uses get_segments
-     * @uses get_flash
-     */
-    use AccessorTrait;
-    use SegmentTrait {
-        SegmentTrait::__get insteadof AccessorTrait;
-    }
+    use SegmentTrait;
 
     /**
      * Name of the session token, may be used as form hidden input name.
@@ -81,183 +37,214 @@ class Session implements SessionOptions, SessionSegment
     public const TOKEN_NAME = '__SESSION_TOKEN__';
 
     /**
-     * @codeCoverageIgnore
+     * Current session id.
      */
-    protected function get_id(): string|false
-    {
-        return session_id();
-    }
+    public string|false $id {
+        get => session_id();
+        set(string|false $value) {
+            if ($value === false) {
+                throw new InvalidArgumentException("The session id cannot be `false`.");
+            }
 
-    private function set_id(string $id): void
-    {
-        if (session_id() === $id) {
-            return;
+            if (session_id() === $value) {
+                return;
+            }
+
+            session_id($value);
         }
-
-        session_id($id);
-    }
-
-    private function get_name(): string|false
-    {
-        return session_name();
-    }
-
-    private function set_name(string $name): void
-    {
-        if (session_name() === $name) {
-            return;
-        }
-
-        session_name($name);
     }
 
     /**
+     * Current session name.
+     */
+    public string|false $name {
+        get => session_name();
+        set(string|false $value) {
+            if ($value === false) {
+                throw new InvalidArgumentException("The session name cannot be `false`.");
+            }
+
+            if (session_name() === $value) {
+                return;
+            }
+
+            session_name($value);
+        }
+    }
+
+    /**
+     * Current session token that can be used to prevent CSRF.
+     *
      * @throws Exception when the token cannot be generated.
      */
-    private function get_token(): string
-    {
-        /** @var string|null $token */
-        $token = &$this[self::TOKEN_NAME];
+    public string $token {
+        get {
+            /** @var string|null $token */
+            $token = &$this[self::TOKEN_NAME];
 
-        return $token
-            ?: $token = $this->generate_token();
-    }
-
-    private function get_cache_limiter(): string|false
-    {
-        return session_cache_limiter();
-    }
-
-    private function set_cache_limiter(string $cache_limiter): void
-    {
-        session_cache_limiter($cache_limiter);
-    }
-
-    private function get_cache_expire(): int|false
-    {
-        return session_cache_expire();
-    }
-
-    private function set_cache_expire(int $cache_expire): void
-    {
-        session_cache_expire($cache_expire);
-    }
-
-    private function get_module_name(): string|false
-    {
-        return session_module_name();
-    }
-
-    private function set_module_name(string $module): void
-    {
-        if (session_module_name() === $module) {
-            return;
+            return $token
+                ?: $token = $this->generate_token();
         }
-
-        session_module_name($module);
-    }
-
-    private function get_save_path(): string|false
-    {
-        return session_save_path();
-    }
-
-    private function set_save_path(string $path): void
-    {
-        if (session_save_path() === $path) {
-            return;
-        }
-
-        session_save_path($path);
     }
 
     /**
-     * @return array{ lifetime: int, path: string, domain: string, secure: bool, httponly: bool, samesite: string }
+     * Current cache limiter.
      */
-    private function get_cookie_params(): array
-    {
-        return session_get_cookie_params();
+    public string|false $cache_limiter {
+        get => session_cache_limiter();
+        set(string|false $value) {
+            if ($value === false) {
+                throw new InvalidArgumentException("The cache limiter cannot be `false`.");
+            }
+
+            session_cache_limiter($value);
+        }
     }
 
     /**
-     * @param array{
+     * Current cache expire.
+     */
+    public int|false $cache_expire {
+        get => session_cache_expire();
+        set(int|false $value) {
+            if ($value === false) {
+                throw new InvalidArgumentException("The cache expire cannot be `false`.");
+            }
+
+            session_cache_expire($value);
+        }
+    }
+
+    /**
+     * Current session module.
+     */
+    public string|false $module_name {
+        get => session_module_name();
+        set(string|false $value) {
+            if ($value === false) {
+                throw new InvalidArgumentException("The session module cannot be `false`.");
+            }
+
+            if (session_module_name() === $value) {
+                return;
+            }
+
+            session_module_name($value);
+        }
+    }
+
+    /**
+     * Current session save path.
+     */
+    public string|false $save_path {
+        get => session_save_path();
+        set(string|false $value) {
+            if ($value === false) {
+                throw new InvalidArgumentException("The session save path cannot be `false`.");
+            }
+
+            if (session_save_path() === $value) {
+                return;
+            }
+
+            session_save_path($value);
+        }
+    }
+
+    /**
+     * Session cookie parameters.
+     *
+     * @var array{
      *     lifetime: int,
      *     path: string,
      *     domain: string,
      *     secure: bool,
      *     httponly: bool,
      *     samesite: string
-     * } $params
+     * }
      */
-    private function set_cookie_params(array $params): void
-    {
-        $is_enabled = filter_var(ini_get('session.use_cookies'), FILTER_VALIDATE_BOOLEAN);
+    public array $cookie_params {
+        get => session_get_cookie_params();
+        set {
+            $is_enabled = filter_var(ini_get('session.use_cookies'), FILTER_VALIDATE_BOOLEAN);
 
-        if (!$is_enabled) {
-            return;
+            if (!$is_enabled) {
+                return;
+            }
+
+            $lifetime = CookieParams::DEFAULT_LIFETIME;
+            $path = CookieParams::DEFAULT_PATH;
+            $domain = CookieParams::DEFAULT_DOMAIN;
+            $secure = CookieParams::DEFAULT_SECURE;
+            $httponly = CookieParams::DEFAULT_HTTP_ONLY;
+
+            extract($value);
+
+            session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly);
         }
-
-        $lifetime = CookieParams::DEFAULT_LIFETIME;
-        $path = CookieParams::DEFAULT_PATH;
-        $domain = CookieParams::DEFAULT_DOMAIN;
-        $secure = CookieParams::DEFAULT_SECURE;
-        $httponly = CookieParams::DEFAULT_HTTP_ONLY;
-
-        extract($params);
-
-        session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly);
     }
 
-    private function get_status(): int
-    {
-        return session_status();
+    /**
+     * Current session status.
+     */
+    public int $status {
+        get => session_status();
     }
 
-    protected function get_is_active(): bool
-    {
-        return $this->status === PHP_SESSION_ACTIVE;
+    /**
+     * Whether sessions is active.
+     */
+    public bool $is_active {
+        get => $this->status === PHP_SESSION_ACTIVE;
     }
 
-    private function get_is_disabled(): bool
-    {
-        return $this->status === PHP_SESSION_DISABLED;
+    /**
+     * Whether sessions are disabled.
+     */
+    public bool $is_disabled {
+        get => $this->status === PHP_SESSION_DISABLED;
     }
 
-    private function get_has_none(): bool
-    {
-        return $this->status === PHP_SESSION_NONE;
+    /**
+     * Whether sessions are enabled, but none exists.
+     */
+    public bool $has_none {
+        get => $this->status === PHP_SESSION_NONE;
     }
 
     /**
      * Whether the session id is referenced in the cookie.
      */
-    private function get_is_referenced(): bool
-    {
-        return !empty($_COOKIE[$this->name]);
+    public bool $is_referenced {
+        get => !empty($_COOKIE[$this->name]);
     }
 
     /**
-     * @return array<string, mixed>
+     * @var array<string, mixed>
      */
-    private function &get_reference(): array
-    {
-        $this->start_or_reuse();
+    public array $reference {
+        &get {
+            $this->start_or_reuse();
 
-        return $_SESSION;
+            /** @var array<string, mixed> $session */
+            $session = &$_SESSION;
+
+            return $session;
+        }
     }
 
-    private ?SegmentCollection $segments = null;
-
-    private function get_segments(): SegmentCollection
-    {
-        return $this->segments ??= new SegmentCollection($this);
+    /**
+     * Session segments.
+     */
+    public SegmentCollection $segments {
+        get => $this->segments ??= new SegmentCollection($this);
     }
 
-    private ?SessionFlash $flash = null;
-
-    private function get_flash(): SessionFlash
-    {
-        return $this->flash ??= new Flash($this);
+    /**
+     * The session flash.
+     */
+    public SessionFlash $flash {
+        get => $this->flash ??= new Flash($this);
     }
 
     /**

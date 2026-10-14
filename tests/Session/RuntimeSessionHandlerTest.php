@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 class RuntimeSessionHandlerTest extends TestCase
 {
-    public function test_handler()
+    public function test_handler(): void
     {
         $handler = new RuntimeSessionHandler();
         $data = uniqid();
@@ -17,6 +17,6 @@ class RuntimeSessionHandlerTest extends TestCase
         $this->assertTrue($handler->close());
         $this->assertTrue($handler->destroy($session_id));
         $this->assertFalse($handler->read($session_id));
-//        $this->assertTrue($handler->gc(mt_rand(10, 20)));
+        //        $this->assertTrue($handler->gc(mt_rand(10, 20)));
     }
 }

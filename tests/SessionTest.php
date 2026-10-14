@@ -5,40 +5,35 @@ namespace ICanBoogie;
 use ICanBoogie\Session\CookieParams;
 use ICanBoogie\Session\SegmentCollection;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class SessionTest extends TestCase
 {
-    private Session|MockObject $session;
-
-    private string $session_id;
+    private Session $session;
 
     protected function setUp(): void
     {
-        $this->session_id = sha1(uniqid());
-        $this->session = $this
-            ->getMockBuilder(Session::class)
-            ->setConstructorArgs([ [ Session::OPTION_ID => $this->session_id ] ])
-            ->onlyMethods([ 'get_id' ])
-            ->addMethods([ 'regenerate_id' ])
-            ->getMockForAbstractClass();
-        $this->session
-            ->expects($this->any())
-            ->method('get_id')
-            ->willReturnCallback(function () {
-                return $this->session_id;
-            });
-        $this->session
-            ->expects($this->any())
-            ->method('regenerate_id')
-            ->willReturnCallback(function () {
-                return $this->session_id = sha1(uniqid());
-            });
+        $this->session = new class ([ Session::OPTION_ID => sha1(uniqid()) ]) extends Session {
+            private string $current_id = '';
+
+            public string|false $id {
+                get => $this->current_id;
+                set(string|false $value) {
+                    $this->current_id = $value === false ? '' : $value;
+                }
+            }
+
+            public function regenerate_id(bool $delete_old_session = false): bool
+            {
+                $this->current_id = sha1(uniqid());
+
+                return true;
+            }
+        };
     }
 
     #[DataProvider('provide_test_property')]
-    public function test_property(string $property, mixed $default, mixed $custom)
+    public function test_property(string $property, mixed $default, mixed $custom): void
     {
         ini_set('session.use_cookies', '1'); // so that cookie params work properly
 
@@ -51,6 +46,9 @@ final class SessionTest extends TestCase
         ini_set('session.use_cookies', '0');
     }
 
+    /**
+     * @return array<array{ string, mixed, mixed }>
+     */
     public static function provide_test_property(): array
     {
         return [
@@ -77,27 +75,27 @@ final class SessionTest extends TestCase
         ];
     }
 
-    public function test_status()
+    public function test_status(): void
     {
         $this->assertSame(PHP_SESSION_NONE, $this->session->status);
     }
 
-    public function test_is_active()
+    public function test_is_active(): void
     {
         $this->assertFalse($this->session->is_active);
     }
 
-    public function test_is_disabled()
+    public function test_is_disabled(): void
     {
         $this->assertEquals(session_status() === PHP_SESSION_DISABLED, $this->session->is_disabled);
     }
 
-    public function test_has_none()
+    public function test_has_none(): void
     {
         $this->assertTrue($this->session->has_none);
     }
 
-    public function test_is_referenced()
+    public function test_is_referenced(): void
     {
         $id = 'sid-' . uniqid();
         $session = $this->session;
@@ -112,12 +110,12 @@ final class SessionTest extends TestCase
         unset($_COOKIE[$session->name]);
     }
 
-    public function test_segments()
+    public function test_segments(): void
     {
         $this->assertInstanceOf(SegmentCollection::class, $this->session->segments);
     }
 
-    public function test_reference()
+    public function test_reference(): void
     {
         $property = uniqid();
         $v1 = uniqid();
@@ -125,13 +123,12 @@ final class SessionTest extends TestCase
         $this->session[$property] = $v1;
         $reference = &$this->session->reference;
 
-        $this->assertIsArray($reference);
         $this->assertSame($v1, $reference[$property]);
         $reference[$property] = $v2;
         $this->assertSame($v2, $this->session[$property]);
     }
 
-    public function test_array_access()
+    public function test_array_access(): void
     {
         $name = uniqid();
         $value = uniqid();
@@ -148,11 +145,12 @@ final class SessionTest extends TestCase
 
     public function test_forward_method(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $this->session->commit();
-        $this->assertTrue(true);
     }
 
-    public function test_forward_invalid_method()
+    public function test_forward_invalid_method(): void
     {
         $method = 'method_' . uniqid();
 
@@ -160,43 +158,23 @@ final class SessionTest extends TestCase
         $this->session->$method();
     }
 
-    public function test_should_not_start_if_session_already_active()
+    public function test_should_not_start_if_session_already_active(): void
     {
-        $session = $this->getMockBuilder(Session::class)
-            ->onlyMethods([ 'get_is_active', 'start' ])
-            ->getMock();
-        $session
-            ->expects($this->once())
-            ->method('get_is_active')
-            ->willReturn(true);
-        $session
-            ->expects($this->never())
-            ->method('start');
-
-        /* @var $session Session */
-
+        $session = new StartProbeSession(true);
         $session->start_or_reuse();
+
+        $this->assertSame(0, $session->start_count);
     }
 
-    public function test_should_start_if_no_session_is_active()
+    public function test_should_start_if_no_session_is_active(): void
     {
-        $session = $this->getMockBuilder(Session::class)
-            ->onlyMethods([ 'get_is_active', 'start' ])
-            ->getMock();
-        $session
-            ->expects($this->once())
-            ->method('get_is_active')
-            ->willReturn(false);
-        $session
-            ->expects($this->once())
-            ->method('start');
-
-        /* @var $session Session */
-
+        $session = new StartProbeSession(false);
         $session->start_or_reuse();
+
+        $this->assertSame(1, $session->start_count);
     }
 
-    public function test_clear()
+    public function test_clear(): void
     {
         $session = $this->session;
         $property = uniqid();
@@ -206,7 +184,7 @@ final class SessionTest extends TestCase
         $this->assertFalse(isset($session[$property]));
     }
 
-    public function test_token()
+    public function test_token(): void
     {
         $session = $this->session;
         $this->assertFalse($session->verify_token(uniqid()));
@@ -217,7 +195,7 @@ final class SessionTest extends TestCase
         $this->assertTrue($session->verify_token($token));
     }
 
-    public function test_should_regenerate_id_and_token()
+    public function test_should_regenerate_id_and_token(): void
     {
         $session = $this->session;
         $id = $session->id;

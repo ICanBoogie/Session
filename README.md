@@ -1,7 +1,7 @@
 # Session
 
 [![Release](https://img.shields.io/packagist/v/icanboogie/session.svg)](https://packagist.org/packages/icanboogie/session)
-[![Code Coverage](https://coveralls.io/repos/github/ICanBoogie/Session/badge.svg?branch=6.0)](https://coveralls.io/r/ICanBoogie/Session?branch=6.0)
+[![Code Coverage](https://coveralls.io/repos/github/ICanBoogie/Session/badge.svg?branch=7.0)](https://coveralls.io/r/ICanBoogie/Session?branch=7.0)
 [![Packagist](https://img.shields.io/packagist/dt/icanboogie/session.svg)](https://packagist.org/packages/icanboogie/session)
 
 The **icanboogie/session** package provides an interface to easily manage PHP sessions. You create a
@@ -127,6 +127,7 @@ If you are defining these options in a config file, you might want to use the li
 
 // config/session.php
 
+use ICanBoogie\Session\CookieParams;
 use ICanBoogie\SessionOptions as Session;
 
 return [
@@ -169,21 +170,16 @@ use ICanBoogie\SessionSegment;
 
 class UserController
 {
-    /**
-     * @var SessionSegment
-     */
-    private $session;
-
-    public function __construct(SessionSegment $session)
-    {
-        $this->session = $session;
+    public function __construct(
+        private SessionSegment $session
+    ) {
     }
 
-    public function action_post_login()
+    public function action_post_login(int $user_id): void
     {
         // …
 
-        $this->session['user_id'] = $user->id;
+        $this->session['user_id'] = $user_id;
     }
 }
 
@@ -192,7 +188,10 @@ class UserController
 use ICanBoogie\Session;
 
 $session = new Session;
-$controller = new UserController($session->segments[UserControlller::class]);
+$controller = new UserController($session->segments[UserController::class]);
+$controller->action_post_login(123);
+
+echo $session->segments[UserController::class]['user_id']; // 123
 ```
 
 
@@ -241,6 +240,12 @@ multiple time during the run time of a PHP script:
 
 ```php
 <?php
+
+use ICanBoogie\Session;
+
+$session = new Session;
+$session->flash['abc'] = 123;
+$session->segments['segment-one']->flash['abc'] = 456;
 
 $session_abc = $session->flash['abc'];   // 123
 $session_abc === $session->flash['abc']; // true
@@ -303,7 +308,7 @@ When processing an unsafe request, make sure the session token is valid:
 
 if (in_array($_SERVER['REQUEST_METHOD'], [ 'POST', 'PUT', 'DELETE' ]))
 {
-    $token = isset($_POST['_session_token']) ? $_POST['_session_token'] : null;
+    $token = $_POST['_session_token'] ?? '';
 
     if ($session->verify_token($token))
     {
@@ -311,7 +316,7 @@ if (in_array($_SERVER['REQUEST_METHOD'], [ 'POST', 'PUT', 'DELETE' ]))
     }
     else
     {
-        // Token verification failed, we should throw an exception.
+        throw new RuntimeException("Invalid session token.");
     }
 }
 ```
@@ -324,11 +329,11 @@ if (in_array($_SERVER['REQUEST_METHOD'], [ 'POST', 'PUT', 'DELETE' ]))
 
 ## Continuous Integration
 
-The project is continuously tested by [GitHub actions](https://github.com/ICanBoogie/<Name>/actions).
+The project is continuously tested by [GitHub Actions](https://github.com/ICanBoogie/Session/actions).
 
-[![Tests](https://github.com/ICanBoogie/Session/actions/workflows/test.yml/badge.svg?branch=6.0)](https://github.com/ICanBoogie/Session/actions/workflows/test.yml)
-[![Static Analysis](https://github.com/ICanBoogie/Session/actions/workflows/static-analysis.yml/badge.svg?branch=6.0)](https://github.com/ICanBoogie/Session/actions/workflows/static-analysis.yml)
-[![Code Style](https://github.com/ICanBoogie/Session/actions/workflows/code-style.yml/badge.svg?branch=6.0)](https://github.com/ICanBoogie/Session/actions/workflows/code-style.yml)
+[![Tests](https://github.com/ICanBoogie/Session/actions/workflows/test.yml/badge.svg?branch=7.0)](https://github.com/ICanBoogie/Session/actions/workflows/test.yml)
+[![Static Analysis](https://github.com/ICanBoogie/Session/actions/workflows/static-analysis.yml/badge.svg?branch=7.0)](https://github.com/ICanBoogie/Session/actions/workflows/static-analysis.yml)
+[![Code Style](https://github.com/ICanBoogie/Session/actions/workflows/code-style.yml/badge.svg?branch=7.0)](https://github.com/ICanBoogie/Session/actions/workflows/code-style.yml)
 
 
 

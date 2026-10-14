@@ -16,22 +16,25 @@ class SegmentCollectionTest extends TestCase
         $this->segments = new SegmentCollection($this->session);
     }
 
-    public function test_array_access()
+    public function test_array_access(): void
     {
         $segment_name = uniqid();
         $property = uniqid();
         $value = uniqid();
-        $this->assertFalse(isset($this->segments[$segment_name]));
-        $this->segments[$segment_name][$property] = $value;
-        $this->assertTrue(isset($this->segments[$segment_name]));
-        $this->assertSame($value, $this->segments[$segment_name][$property]);
-        $this->assertSame($value, $this->session[$segment_name][$property]);
+        $segments = $this->segments;
 
-        unset($this->segments[$segment_name]);
-        $this->assertFalse(isset($this->segments[$segment_name]));
+        $this->assertFalse($segments->offsetExists($segment_name));
+        $segment = $segments[$segment_name];
+        $segment[$property] = $value;
+        $this->assertTrue($segments->offsetExists($segment_name));
+        $this->assertSame($value, $segment->reference[$property]);
+        $this->assertSame([ $property => $value ], $this->session->reference[$segment_name]);
+
+        unset($segments[$segment_name]);
+        $this->assertFalse($segments->offsetExists($segment_name));
     }
 
-    public function test_iterator()
+    public function test_iterator(): void
     {
         $segments = $this->segments;
 
@@ -56,9 +59,9 @@ class SegmentCollectionTest extends TestCase
         $this->fail("There should have been one segment");
     }
 
-    public function test_offset_set_should_throw_an_exception()
+    public function test_offset_set_should_throw_an_exception(): void
     {
-        $this->expectException(\ICanBoogie\OffsetNotWritable::class);
-        $this->segments[uniqid()] = uniqid();
+        $this->expectException(SegmentNotWritable::class);
+        $this->segments->offsetSet(uniqid(), new Segment(uniqid(), $this->session));
     }
 }

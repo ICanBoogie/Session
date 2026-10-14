@@ -2,49 +2,40 @@
 
 namespace ICanBoogie\Session;
 
-use ICanBoogie\Accessor\AccessorTrait;
 use ICanBoogie\Session;
 use ICanBoogie\SessionFlash;
 use ICanBoogie\SessionSegment;
 
 /**
  * A session segment.
- *
- * @property array $reference A reference to the segment in the session.
- * @see self::get_reference()
- * @property SessionFlash $flash The session segment flash.
- * @see self::get_flash()
  */
 final class Segment implements SessionSegment
 {
+    use SegmentTrait;
+
     /**
-     * @uses get_reference
-     * @uses get_flash
+     * The session segment flash.
      */
-    use AccessorTrait;
-    use SegmentTrait {
-        SegmentTrait::__get insteadof AccessorTrait;
-    }
-
-    private ?SessionFlash $flash = null;
-
-    private function get_flash(): SessionFlash
-    {
-        return $this->flash ?? $this->flash = new Flash($this);
+    public SessionFlash $flash {
+        get => $this->flash ?? $this->flash = new Flash($this);
     }
 
     /**
-     * @return array<string, mixed>
+     * A reference to the segment in the session.
+     *
+     * @var array<string, mixed>
      */
-    private function &get_reference(): array
-    {
-        $reference = &$this->session->reference[$this->segment_name];
+    public array $reference {
+        &get {
+            /** @var array<string, mixed>|null $reference */
+            $reference = &$this->session->reference[$this->segment_name];
 
-        if ($reference === null) {
-            $reference = [];
+            if ($reference === null) {
+                $reference = [];
+            }
+
+            return $reference;
         }
-
-        return $reference;
     }
 
     public function __construct(
@@ -58,7 +49,7 @@ final class Segment implements SessionSegment
      */
     public function clear(): void
     {
-        $reference = &$this->get_reference();
+        $reference = &$this->reference;
         $reference = [];
     }
 }

@@ -42,7 +42,7 @@ final class RuntimeSessionHandler extends SessionHandler
     /**
      * @inheritdoc
      */
-    public function gc(int $max_lifetime): int|false
+    public function gc(int $max_lifetime): int
     {
         return 1;
     }
